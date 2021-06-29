@@ -24,3 +24,9 @@ phastCons conservation in 99-vertebrates
 and constraint measured in CADD v1.6 (excluding
 McVicker's B statistic). They both use a 
 threshold applied in lookup tables of B=0.6.
+
+The additional maps found in different_B_thresholds
+correspond to maps using different thresholds on
+minimum B values, described in Section 1.5 of our
+paper and presented in Figures S7 & S9. The
+thresholds used are 0 (None), B=0.2, B=0.5.
