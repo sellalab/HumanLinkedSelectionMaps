@@ -1,0 +1,23 @@
+fl94=cadd94_gmask_v1.6_without_bstat
+for i in {0..52}; do sh/pause-step.sh; sh/csortcons.sh chr1 $fl94 $i; done > /dev/null
+for i in {0..60}; do sh/pause-step.sh; sh/csortcons.sh chr2 $fl94 $i; done > /dev/null
+for i in {0..50}; do sh/pause-step.sh; sh/csortcons.sh chr3 $fl94 $i; done > /dev/null
+for i in {0..48}; do sh/pause-step.sh; sh/csortcons.sh chr4 $fl94 $i; done > /dev/null 
+for i in {0..46}; do sh/pause-step.sh; sh/csortcons.sh chr5 $fl94 $i; done > /dev/null 
+for i in {0..42}; do sh/pause-step.sh; sh/csortcons.sh chr6 $fl94 $i; done > /dev/null 
+for i in {0..36}; do sh/pause-step.sh; sh/csortcons.sh chr7 $fl94 $i; done > /dev/null 
+for i in {0..38}; do sh/pause-step.sh; sh/csortcons.sh chr8 $fl94 $i; done > /dev/null 
+for i in {0..26}; do sh/pause-step.sh; sh/csortcons.sh chr9 $fl94 $i; done > /dev/null 
+for i in {0..32}; do sh/pause-step.sh; sh/csortcons.sh chr10 $fl94 $i; done > /dev/null 
+for i in {0..31}; do sh/pause-step.sh; sh/csortcons.sh chr11 $fl94 $i; done > /dev/null 
+for i in {0..30}; do sh/pause-step.sh; sh/csortcons.sh chr12 $fl94 $i; done > /dev/null 
+for i in {0..25}; do sh/pause-step.sh; sh/csortcons.sh chr13 $fl94 $i; done > /dev/null 
+for i in {0..21}; do sh/pause-step.sh; sh/csortcons.sh chr14 $fl94 $i; done > /dev/null 
+for i in {0..18}; do sh/pause-step.sh; sh/csortcons.sh chr15 $fl94 $i; done > /dev/null 
+for i in {0..17}; do sh/pause-step.sh; sh/csortcons.sh chr16 $fl94 $i; done > /dev/null 
+for i in {0..15}; do sh/pause-step.sh; sh/csortcons.sh chr17 $fl94 $i; done > /dev/null 
+for i in {0..20}; do sh/pause-step.sh; sh/csortcons.sh chr18 $fl94 $i; done > /dev/null 
+for i in {0..6}; do sh/pause-step.sh; sh/csortcons.sh chr19 $fl94 $i; done > /dev/null 
+for i in {0..15}; do sh/pause-step.sh; sh/csortcons.sh chr20 $fl94 $i; done > /dev/null 
+for i in {0..8}; do sh/pause-step.sh; sh/csortcons.sh chr21 $fl94 $i; done > /dev/null 
+for i in {0..6}; do sh/pause-step.sh; sh/csortcons.sh chr22 $fl94 $i; done > /dev/null
