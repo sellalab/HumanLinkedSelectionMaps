@@ -1,0 +1,22 @@
+This is a modified version of McVicker's C code 
+to pre-calculate maps of the effects of background
+selection. 
+
+Initial modifications were made by Guy Amster and
+Eyal Elyashiv and saved on the cluster in the
+shared folder: /ifs/data/c2b2/gs_lab/shared/guy/B-maps/src.
+
+In this version I will attempt to modify the code 
+in order to return pre-exponentiated "little" 
+B values on the log scale instead of the discrete
+bins used for big B values that were used earlier
+(see Elyashiv et al, 2016)
+
+CONTENTS
+--------
+
+c_libs: contains libraries that are required to 
+compile calc_bkgd
+
+src: source code to build calc_bkgd
+

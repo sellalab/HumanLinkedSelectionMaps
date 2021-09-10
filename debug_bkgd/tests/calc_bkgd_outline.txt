@@ -1,0 +1,65 @@
+calc_bkgd outline:
+	- current file is "__code.c__", 
+	- associated lines in source code marked [line_num]
+	- indentation indicates we're in a new function
+
+__calc_bkgd.c__
+calc_bkgd->main: 
+	config = new Config initialized from config_file
+	parm = new BkgdParam initialized from Config
+	rtab = recombination table loaded
+	->NOTE: it appears just position and cM/Mb information is loaded here?
+	cons_list = conserved segments in genetic map units created using rtab
+	->NOTE: (physical) start/end; M/Mb between start/end; rstart, rend (genetic map start/end)
+
+	// CALCULATES B ACROSS ENTIRE CHROMOSOME IN CONFIG
+	calc_bkgd_chr(config, chr, rtab, cons_list, parm, out_fh) [317]
+		// INITIALIZE AN "INTERPOLATOR" STRUCTURE
+		bgi = BkgdInterp initialized from rtab, char, cons_list, parm [198]
+
+		while (position < chrom_length) [201]
+			// PROCESS EVERY POSITION IN THE CHROMOSOME USING INTERPOLATOR
+			->b = bkgd_interp_eval: [202]
+		
+			__bkgd_interp.c__
+			// FINDS DISCRETE BLOCKS OF CONSTANT B WITHIN PRECISION PARAMETERS
+			bkgd_interp_eval(bgi, pos) [332]
+				// if the current point is outside the current interpolating window
+				// ->build new interpolating window, get edge via extrapolation of B
+				->get_next_point [340]
+			
+				get_next_point(bgi, last_p, p) [115]
+					// PROBES OUTWARD FROM CURRENT POSITION TO FIND
+					// NEXT POSITION WHERE B CHANGES MORE THAN PRESET
+					// BKGD_CHANGE_THRESH
+					->get_r_next: [123]
+
+					get_r_next [39]
+						// extrapolation from quadratic formula for B 
+						// search for new interpolation box edge where B changes
+						// by less than max, more than threshold
+
+					// ONCE CANDIDATE POSITION IS FOUND, CALCULATE B AT THAT POSITION
+					->bkgd_calc_b [225]
+						
+					__bkgd.c__
+					// CALCULATE B AT A SINGLE POINT
+					bkgd_calc_b(BkgdPoint *bpoint, GList *cons_list, GList *next_cons, BkgdParam *parm, double r_chr_len) [564]
+						->get_blk_term: [590]
+						get_blk_term(ConsBlock *cblk, BkgdPoint *bpoint, double *drv1_term, double *drv2_term, BkgdParam *p) [258]
+						// GET CONTRIBUTION TO B AT A SINGLE POINT FROM A CONSERVED BLOCK (little "B")
+						// USE LOOKUP TABLE FOR INTEGRALS -> TRIVIAL FOR POINT DISTRIBUTION
+						// TAKE -EXP(SUM) TO GET BIG "B"
+						// see [652 -659]
+
+
+					// IF POINT AND ITS B VALUE SATISFY PRECISION PARAMETERS, ACCEPT THE POINT AND CONTINUE
+
+			// IF B != PREV_B ON BKGD_SCALE, RECORD CURRENT B AND LENGTH OF CONTIGUOUS SEGMENT WITH SCORE "B"
+
+
+
+
+
+
+

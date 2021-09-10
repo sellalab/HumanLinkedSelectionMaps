@@ -1,0 +1,27 @@
+STACK CALL:
+-----------
+
+>main
+	read config: config = config_read_file(argv[1], CONFIG_MISSING_KEY_ERROR);
+	create chrom: chr = g_new(Chromosome, 1);
+	create param_struct: parm = bkgd_param_new(config);
+	get conserved segment list: cons_list = get_cons_rec_dists(config, rtab);
+
+	>calc_bkgd_chr: calc_bkgd_chr(config, chr, rtab, cons_list, parm, out_fh, debug_fh);
+		make bkgd_interpolator: bgi = bkgd_interp_new(rtab, chr->len, cons_list, parm);
+	
+		>while(loop through chrom): while(pos <= chr->len)
+	
+			>interp_bvalue: b = bkgd_interp_eval(bgi, pos, debug_fh);
+	
+				>if (current point outside bkgd_interpolator box): if(bgi->p2->pos < pos) 
+
+					>get new interp endpoint: get_next_point(bgi, bgi->p1, p);
+
+						>search for next point: next_r = get_r_next(last_p->r_pos,  last_p->b, last_p->b_drv1, last_p->b_drv2);
+
+							...
+
+				delta_recrate: r_delta = rectab_rpos(bgi->rtab, pos) - bgi->p1->r_pos;
+				interpolate B value: return bgi->p1->b + r_delta*bgi->slope;
+

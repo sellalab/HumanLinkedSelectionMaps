@@ -1,0 +1,23 @@
+#chr22	51304566
+#CHROMOSOME_NAME=chr22
+#CHROMOSOME_LENGTH=51304566
+#OUTPUT_TOKEN=AA_Map_10kb
+#RECOMB_RATE_TABLE=/Users/davidmurphy/GoogleDrive/linked_selection/data/maps/AA_Map_10kb/chr22_AA_Map_10kb_window_hg19.txt
+#CONS_TABLE=/Users/davidmurphy/GoogleDrive/linked_selection/data/bsanno/primate_cons95_Segments/chr22.primate_cons95_Segments.bed
+#PARAM_T=0.01
+#RECOMB_RATE_SCALE=1e-08
+#CHROMOSOME_FEATURES=/Users/davidmurphy/GoogleDrive/linked_selection/data/ch_features/chr_len_all.txt
+#OUTPUT_DIR=/Users/davidmurphy/GoogleDrive/linked_selection/bkgd/tests
+#PARAM_T_DIST_TYPE=POINT
+#USE_SUM_APPROXIMATION=0
+#BKGD_INTERP_MAX_DIST=0.0001
+#BKGD_SCALE=0.01
+#BKGD_CHANGE_THRESH=0.02
+#BKGD_OFFSET=0.01
+#BKGD_PARAM_MAX_SUM_THRESH=0.001
+#PARAM_U=7.4e-08
+0 27917972
+1 5008261
+0 5825886
+1 4420954
+0 8131493

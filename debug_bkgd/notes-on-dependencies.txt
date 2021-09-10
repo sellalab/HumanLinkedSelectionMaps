@@ -1,0 +1,46 @@
+#### REQUIRED C LIBRARIES #####
+
+(NOTE: these are the versions I used, newer (or older) versions may also suffice)
+
+CBLAS
+zlib-1.2.8
+glib-2.42.2
+pkg-config-0.28
+gettext-0.19.4
+libffi-3.2
+gsl-1.16
+
+
+#### NOTES ON INSTALLATION ISSUES ####
+
+(these notes may or may not be helpful depending on your system)
+
+gsl-1.16 installed without issue
+
+glib-2.42.2 has several dependencies:
+	1)pkg-config (done)
+	2)libffi (done)
+	3)GNU gettext()
+	--once these are installed the ./configure in glib seems to work fine..
+
+zlib-1.2.8 installed without issue
+
+
+making edits to the following lines of the makefile in original scripts package:
+
+# The pre-processor and compiler options.
+MY_CFLAGS = -I/ifs/data/c2b2/gs_lab/shared/software/gsl-1.16/include/gsl/ $(shell pkg-config --cflags glib-2.0) 
+**changed to:
+(should be correct- matches the directory in the cluster version)
+MY_CFLAGS = /usr/local/include/gsl/ $(shell pkg-config --cflags glib-2.0) 
+
+# The linker options.
+MY_LIBS   = -L/ifs/data/c2b2/gs_lab/shared/software/gsl-1.16/lib/ -lgsl -lgslcblas -lm -lz $(shell pkg-config --libs glib-2.0)
+**changed to:
+MY_LIBS   = /usr/local/include/ -lgsl -lgslcblas -lm -lz $(shell pkg-config --libs glib-2.0)
+
+ERROR MESSAGE:
+aa.d:1: *** missing separator.  Stop.
+possibly due to incorrect echo functionality ignoring -n newline suppression. replacing with printf
+--THIS WORKS! :-)
+
