@@ -1,8 +1,15 @@
 __author__ = 'davidmurphy'
 
 
+import os
 import numpy as np
 from classes.runstruct import root_dir, RunStruct, human_autosomes
+
+
+# create paths to initial and final files used for RunStruct and other results
+os.makedirs(root_dir + '/result', exist_ok=True)
+for prfx in ['init', 'final']:
+    os.makedirs('{}/result/{}_files'.format(root_dir, prfx), exist_ok=True)
 
 # parameter for the percentage of genetic map to chop of from the end of chroms
 gm = 0.1
