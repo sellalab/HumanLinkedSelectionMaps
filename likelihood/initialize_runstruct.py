@@ -46,7 +46,7 @@ a = RunStruct(nspc=ns, wind=wn, slid=sl, tkn=tk, ncon=ncons,
               cdfe=(),
               )
 
-a.files.fnm = '/Users/MURPHYD/Dropbox (OMRF)/linked_selection/lsm_run/data/nmsk/{ch}.euarchontoglires.0.35.MaskLowRecomb.nmsk.npz'
+a.files.fnm = root_dir + '/data/nmsk/{ch}.euarchontoglires.0.35.MaskLowRecomb.nmsk.npz'
 # turn of one of the experimental threshold params (not used in any paper/appendix results)
 a.fixed.cth = None
 # save the RunStruct data structure as a text file that can be read to initalize a RunStruct later
