@@ -8,9 +8,10 @@ Created on Sun Mar  4 13:09:14 2018
 
 import re
 import os
+import sys
+
 import numpy as np
 from sys import argv
-from itertools import izip
 from collections import namedtuple
 import data_processing.data_tools as dtl
 import data_processing.precalc_tools as prc
@@ -43,11 +44,11 @@ def build_neutmask(cst):
     filtmask = dtl.get_filter_mask(cst.chrom, cst.files.fnff)
 
     # SNP sites (used to encode polymorphism in the final neutrality mask
-    print 'READING SNP DATA FROM FILE: {}'.format(cst.snp_files)
+    print('READING SNP DATA FROM FILE: {}'.format(cst.snp_files))
 
     # remove CpG SNPs and CpG islands
     if 'filter.CpG' in cst.tkn:
-        print 'FILTERING CpG SITES AND CpG ISLANDS'
+        print('FILTERING CpG SITES AND CpG ISLANDS')
         # # get ancestral state of site to call CpG mutations
         # anc_fname = cst.ancs_files
         # cpg = dtl.cpg_mask(cst.chrom, anc_fname)
@@ -92,16 +93,16 @@ def build_neutmask_2(cst):
     if 'cutoff_nval' in cst.tkn:
         wigz_array = dtl.wigz_array(cst.chrom, fwigz, use_neg1=True)
         ncmask = (0 <= wigz_array) & (wigz_array <= cst.nval)
-        print 'TAKING NEUTRAL SITES BELOW PHASTCONS CUTOFF SCORE: {}'.format(cst.nval)
+        print('TAKING NEUTRAL SITES BELOW PHASTCONS CUTOFF SCORE: {}'.format(cst.nval))
 
     else:
-        print 'CALLING NEUTRAL FOR BOTTOM {}% OF {} FILE.'.format(
-            100 * cst.npct, fwigz)
-        print 'MAXIMUM PHASTCONS CUTOFF SCORE: {}'.format(pmax)
+        print('CALLING NEUTRAL FOR BOTTOM {}% OF {} FILE.'.format(
+            100 * cst.npct, fwigz))
+        print('MAXIMUM PHASTCONS CUTOFF SCORE: {}'.format(pmax))
         ncmask = dtl.conservation_mask(fwigz, cst.chrom, pmax=pmax)
     msg = 'NEUTRAL PASSING SCORE COUNT: {:.3e}. FRACTION OF CHROM: {:.1f}%'
     nsum = ncmask.sum()
-    print msg.format(nsum, 100.0 * nsum / cst.chlen)
+    print(msg.format(nsum, 100.0 * nsum / cst.chlen))
 
     # strict calling mask from 1000 genomes project
     callmask = dtl.sequence_mask(cst.call_mask, cst.chrom)
@@ -115,7 +116,7 @@ def build_neutmask_2(cst):
 
     # remove CpG SNPs and CpG islands
     if 'filter.CpG' in cst.tkn:
-        print 'FILTERING CpG SITES AND CpG ISLANDS'
+        print('FILTERING CpG SITES AND CpG ISLANDS')
         # # get C positions of all CpGs from ancestor
         # icpg = dtl.cpg_mask(cst.chrom, cst.ancs_files)
         # get C positions of all CpGs from hg19 reference
@@ -140,7 +141,7 @@ def build_neutmask_2(cst):
     # remove BGC type mutations
     if 'filter.BGC' in cst.tkn:
         is_bgc = ['AC', 'AG', 'CA', 'CT', 'GA', 'GT', 'TC', 'TG']
-        print 'FILTERING BIASED GENE CONVERSION SNPS'
+        print('FILTERING BIASED GENE CONVERSION SNPS')
         # get snp pos, ref, alt
         snpcnt = dtl.snpcount(cst.snp_files, returnbases=True)
         issnp, ref, alt = snpcnt[0], snpcnt[1], snpcnt[3]
@@ -155,7 +156,7 @@ def build_neutmask_2(cst):
 
     # remove CG hypermutable regions
     if 'filter.CG.mut' in cst.tkn:
-        print 'FILTERING CG HYPERMUTABLE REGIONS'
+        print('FILTERING CG HYPERMUTABLE REGIONS')
         # get dict of hypermutable segments for each chrom
         cg_dict = dtl.cg_hypermutable()
         # if current chrom includes hypermutable segments, filter them
@@ -212,7 +213,7 @@ def build_neutmask_2(cst):
     #     print msg.format(filter_sum, gene_sum, neut_sum)
 
     # remove genetic map edges
-    print 'FILTERING GMAP EDGES + {}cM'.format(cst.gmsk)
+    print('FILTERING GMAP EDGES + {}cM'.format(cst.gmsk))
     gmsk = np.ones(shape=cst.chlen, dtype=bool)
     # load the gmap
     gmp = GeneticMap(cst.chrom, cst.gmap_files)
@@ -232,7 +233,7 @@ def build_neutmask_2(cst):
     gmsk_sum = np.sum(neutmask)
     # print sums after each filter step
     msg = 'filter {}\ngenic {}\nneutral {}\ngmask {}\n'
-    print msg.format(filter_sum, gene_sum, neut_sum, gmsk_sum)
+    print(msg.format(filter_sum, gene_sum, neut_sum, gmsk_sum))
 
     # save to filename if mask file does not exist
     if not os.path.isfile(cst.neut_masks):
@@ -254,22 +255,25 @@ def get_arrays(cst, plen=None):
     :param plen:
     :return:
     """
-    # # check wheter neut mask file exists, otherwise build it
-    # if os.path.isfile(cst.neut_masks):
-    #     print 'LOADING EXISTING NEUTRAL MASK: {}'.format(cst.neut_masks)
-    #     nmsk = np.load(cst.neut_masks)['neutmask']
-    # else:
-    #     # build and save, then return
-    #     print 'BUILDING NEUTRAL MASK: {}'.format(cst.neut_masks)
-    #     nmsk = build_neutmask_2(cst)
-
-    # create neutmask by default (even if one exists)
-    if 'aligned.8' in cst.tkn:
-        print 'LOADING ALIGNED 8 NEUTRAL MASK: {}'.format(cst.neut_masks)
+    # check wheter neut mask file exists, otherwise build it
+    if os.path.isfile(cst.neut_masks):
+        print('LOADING EXISTING NEUTRAL MASK: {}'.format(cst.neut_masks))
         nmsk = np.load(cst.neut_masks)['neutmask']
     else:
-        print 'BUILDING NEUTRAL MASK: {}'.format(cst.neut_masks)
-        nmsk = build_neutmask_2(cst)
+        # TODO: Note to Allen: we will need to prepare all of the intermediate files to rebuild these
+        print('NO EXISTING NEUTRAL MASK FOUND. PROVIDE PRECURSOR FILES AND THEN UNCOMMENT CODE BELOW')
+        exit(1)
+        # build and save, then return
+        # print('BUILDING NEUTRAL MASK: {}'.format(cst.neut_masks))
+        # nmsk = build_neutmask_2(cst)
+
+    # # create neutmask by default (even if one exists)
+    # if 'aligned.8' in cst.tkn:
+    #     print('LOADING ALIGNED 8 NEUTRAL MASK: {}'.format(cst.neut_masks))
+    #     nmsk = np.load(cst.neut_masks)['neutmask']
+    # else:
+    #     print('BUILDING NEUTRAL MASK: {}'.format(cst.neut_masks))
+    #     nmsk = build_neutmask_2(cst)
 
     # generate input arrays from reference maps and polymorphism data
     sgarr, bsarr, csarr, nuarr = join_maps(cst, plen, nmsk)
@@ -291,12 +295,12 @@ def join_poly(cst, nmsk, sarr):
     :rtype: np.ndarray
     """
     # get array of snp_pos, ref_count, alt_count from snp files
-    print 'READING SNP DATA FROM FILE: {}'.format(cst.snp_files)
+    print('READING SNP DATA FROM FILE: {}'.format(cst.snp_files))
     snps = np.column_stack(dtl.snpcount(cst.snp_files))
 
     # get polymorphism & divergence summaries compressed into segments
     pa, sample = prc.compress_data(nmsk, snps, sarr)
-    print 'SAMPLE SIZE INFERRED FROM SNP FILE: {}'.format(sample)
+    print('SAMPLE SIZE INFERRED FROM SNP FILE: {}'.format(sample))
 
     # retrieve sample size from SNP data and save to cst if not already set
     # only save for chr1 to avoid colliding open/write/save operations
@@ -324,10 +328,10 @@ def load_maps(cst, pl, nmsk):
     mrg = True if pl else False
     bmap_files = []
     bmsg = 'READING SEGMENTS AND VALUES FROM BMAP: {}'
-    for (ba, tvec) in izip(cst.bs_annos, cst.bdfe):
+    for (ba, tvec) in zip(cst.bs_annos, cst.bdfe):
         for ti in tvec:
             f_bm = cst.bkgd_file(ba, ti, plen=pl, merge=mrg)
-            print bmsg.format(f_bm)
+            print(bmsg.format(f_bm))
             bmap_files.append(f_bm)
     # collect bmap segments and values
     bsegs, bvals = prc.collect_lsmaps(cst.chrom, bmap_files)
@@ -335,10 +339,10 @@ def load_maps(cst, pl, nmsk):
     # collect cmap files
     cmap_files = []
     cmsg = 'READING SEGMENTS AND VALUES FROM CMAP: {}'
-    for (ca, svec) in izip(cst.cs_annos, cst.cdfe):
+    for (ca, svec) in zip(cst.cs_annos, cst.cdfe):
         for si in svec:
             f_cm = cst.cmap_file(ca, si)
-            print cmsg.format(f_cm)
+            print(cmsg.format(f_cm))
             cmap_files.append(f_cm)
     # collect cmap segments and values
     csegs, cvals = prc.collect_lsmaps(cst.chrom, cmap_files)
@@ -362,27 +366,29 @@ def load_maps(cst, pl, nmsk):
 
     # /ifs/scratch/c2b2/gs_lab/dam2214/scratch/phast/runs/
     # aligned_8_win_10000_subcounts/chr1.subcount.filled.txt
-    rdir = '/ifs/scratch/c2b2/gs_lab/dam2214/scratch/phast/runs/'
-    sdir = rdir + 'aligned_{}_win_{}'.format(cst.nspc, cst.wind)
+    # rdir = '/ifs/scratch/c2b2/gs_lab/dam2214/scratch/phast/runs/'
+    # sdir = rdir + 'aligned_{}_win_{}'.format(cst.nspc, cst.wind)
     # sdir = rdir + 'aligned{}_win{}'.format(cst.nspc, cst.wind)
+    # if cst.slid:
+    #     pct = int(100.0 * 1.0 / cst.slid)
+    #     #     fout = '{}/{}.subcount.filled.{}pct.txt'.format(pth, ch, pct)
+    #     fsub = '{}/{}.subcount.filled.{}pct.txt'.format(sdir, cst.chrom, pct)
+    #     print('LOADING SLIDING SUBSTITUTION COUNT FILE {}'.format(fsub))
+    # else:
+    #     fsub = '{}/{}.subcount.filled.txt'.format(sdir, cst.chrom)
+    #     print('LOADING NON-OVERLAPPING SUBSTITUTION COUNT FILE {}'.format(fsub))
+    # if 'filter.CpG' in cst.tkn:
+    #     print('ESTIMATING NU USING CpG ADJUSTED SUBSTITUTION COUNTS')
+    #     subcnt = np.loadtxt(fsub)[:, (0, 1, 2, 4)]
+    # elif 'filter.BGC' in cst.tkn:
+    #     print('ESTIMATING NU USING BGC ADJUSTED SUBSTITUTION COUNTS')
+    #     subcnt = np.loadtxt(fsub)[:, (0, 1, 2, 5)]
+    # else:
+    #     print('ESTIMATING NU USING TOTAL SUBSTITUTION COUNTS')
+    #     subcnt = np.loadtxt(fsub)[:, :4]
 
-    if cst.slid:
-        pct = int(100.0 * 1.0 / cst.slid)
-        #     fout = '{}/{}.subcount.filled.{}pct.txt'.format(pth, ch, pct)
-        fsub = '{}/{}.subcount.filled.{}pct.txt'.format(sdir, cst.chrom, pct)
-        print 'LOADING SLIDING SUBSTITUTION COUNT FILE {}'.format(fsub)
-    else:
-        fsub = '{}/{}.subcount.filled.txt'.format(sdir, cst.chrom)
-        print 'LOADING NON-OVERLAPPING SUBSTITUTION COUNT FILE {}'.format(fsub)
-    if 'filter.CpG' in cst.tkn:
-        print 'ESTIMATING NU USING CpG ADJUSTED SUBSTITUTION COUNTS'
-        subcnt = np.loadtxt(fsub)[:, (0, 1, 2, 4)]
-    elif 'filter.BGC' in cst.tkn:
-        print 'ESTIMATING NU USING BGC ADJUSTED SUBSTITUTION COUNTS'
-        subcnt = np.loadtxt(fsub)[:, (0, 1, 2, 5)]
-    else:
-        print 'ESTIMATING NU USING TOTAL SUBSTITUTION COUNTS'
-        subcnt = np.loadtxt(fsub)[:, :4]
+    print('ESTIMATING NU USING TOTAL SUBSTITUTION COUNTS')
+    subcnt = np.loadtxt(cst.neut_subs)[:, :4]
     usegs, uvals = prc.prepare_umap_4(cst.chrom, subcnt)
 
     # return combined lists of segments and values
@@ -434,6 +440,11 @@ def load_saved(cst, chroms=None):
         # open npz archive of all input arrays
         cst.chrom = ch
 
+        # if skip chrom is set to the current chrom, don't load it
+        if ch == cst.vars.drop_chrom:
+            print('DROPPING CHROMOSOME {} FROM DATASET'.format(ch))
+            continue
+
         # count neutral sites per segment
         div = np.load(cst.dv_files)['dv']
         ntsites = div[:, 0]
@@ -484,17 +495,17 @@ def load_saved(cst, chroms=None):
     # generate a jackknife mask if jackknife is in use
     if cst.vars.use_jackknife:
         jidx, jwin = cst.vars.jackknife_index, cst.vars.jackknife_window
-        print 'USING JACKKNIFE SAMPLING: INDEX={} WINDOW={}'.format(jidx, jwin)
+        print('USING JACKKNIFE SAMPLING: INDEX={} WINDOW={}'.format(jidx, jwin))
         m = get_jackknife_mask(sg, jidx, jwin)
         # if jackknife mask has no effect on data, stop program
         n_1, n_2 = dv.sum(), dv[m].sum()
         if n_1 == n_2:
             msg = 'ERROR: jackknife index {} and window {} have no effect.'
-            print msg.format(jidx, jwin)
+            print(msg.format(jidx, jwin))
             exit(1)
         else:
             d = n_1 - n_2
-            print 'JACKKNIFE MASKING REMOVED {} OF {} SITES'.format(d, n_1)
+            print('JACKKNIFE MASKING REMOVED {} OF {} SITES'.format(d, n_1))
         # otherwise just return the masked data
         sg, nu, nt, dv, pl = sg[m], nu[m], nt[m], dv[m], pl[m]
         # check that bs/cs arrays exist before masking
@@ -522,7 +533,7 @@ def adjust_arrays(cst, bs, cs, nu, nt, dv, pl):
     else:
         ds_msk = None
 
-    # mask and aggregate all of the arrays
+    # mask and aggregate all the arrays
     adjusted = []
     for arr in (bs, cs, nu, nt, dv, pl):
         # mask out blocks without neutral data
@@ -540,6 +551,8 @@ def adjust_arrays(cst, bs, cs, nu, nt, dv, pl):
     # convert nu to a constant if set in variables
     if cst.vars.mu_const:
         assert cst.stat.meandiv
+        sys.stderr.write('USING CONSTANT MU = {}\n'.format(cst.stat.meandiv))
+        sys.stdout.flush()
         nu = np.full(shape=len(dv), fill_value=cst.stat.meandiv)
 
     # determine whether map is old or new by inspection
@@ -761,26 +774,36 @@ def save_arrays(cst, plen):
 
 def main():
 
-    # local
-    if root_dir.startswith('/Users/davidmurphy'):
-        chrom = 'chr22'
-        init = root_dir + '/result/init_files/YRI.pr95.cleanrun.ds.00.BS1.6.CS0.0.NOT_STARTED.initial.txt'
-        plen = 2e7
+    # # local
+    # if root_dir.startswith('/Users/MURPHYD/'):
+    init = root_dir + '/result/init_files/YRI.cadd94_gmask_v1.6_without_bstat.BS1.6.CS0.0.NOT_STARTED.initial.txt'
+    # this is the size of the chunks used to make B maps in fragments
+    plen = 1e7
+    # chrom = 'chr22'
+    for chrom in human_autosomes:
+        # initialize ChromStruct from file
+        cst = ChromStruct(chrom=chrom, init=init)
 
-    # remote
-    else:
-        if len(argv) != 4:
-            print 'usage: lh_inputs <chrom> <init> <plen>'
-            exit()
-        chrom = argv[1]
-        init = argv[2]
-        plen = eval(argv[3])
+        # generate all the compressed arrays and save
+        print('Preparing inputs for {}...\n'.format(chrom))
+        save_arrays(cst, plen)
+        print('\nDone preparing inputs for {}.'.format(chrom))
 
-    # initialize ChromStruct from file
-    cst = ChromStruct(chrom=chrom, init=init)
-
-    # generate all of the compressed arrays and save
-    save_arrays(cst, plen)
+    # # remote
+    # else:
+    #     if len(argv) != 4:
+    #         print('usage: lh_inputs <chrom> <init> <plen>')
+    #         exit()
+    #     chrom = argv[1]
+    #     init = argv[2]
+    #     plen = eval(argv[3])
+    #
+    # # initialize ChromStruct from file
+    # cst = ChromStruct(chrom=chrom, init=init)
+    #
+    # # generate all the compressed arrays and save
+    # save_arrays(cst, plen)
+    # print('\nDone preparing inputs for {}.'.format(chrom))
 
 
 if __name__ == '__main__':
