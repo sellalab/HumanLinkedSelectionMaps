@@ -71,27 +71,43 @@ def run_test(init, idx, min_bsx, min_b):
     cst.txt_file = f.format(i=run_id, n=bth_str, **cst.dict)
 
     # run the inference
-    run_inference(cst, parallel=True)
+    run_inference(cst, parallel=True)  # parallel not working on personal computer for some reason...
+    # run_inference(cst, parallel=False)
 
 
 def main():
-    if root_dir.startswith('/Users/davidmurphy'):
-        init = root_dir + '/result/init_files/' \
-                          'YRI.pr95.nff_2.BS1.6.CS0.0.NOT_STARTED.initial.txt'
-        idx = 0
-        min_bsx = 0.005
-    else:
-        if len(argv) != 5:
-            print 'usage: cluster_runinf <init> <idx> <min_bsx> <min_b'
-            exit(1)
-        init = argv[1]
-        idx = int(argv[2])
-        min_bsx = eval(argv[3])
-        min_b = eval(argv[4])
-        if min_b is not None:
-            min_b = np.log(min_b)
-
+    # path to initialization file
+    init = root_dir + '/result/init_files/YRI.cadd94_gmask_v1.6_without_bstat.BS1.6.CS0.0.NOT_STARTED.initial.txt'
+    # minimum b-value to apply *within optimization* (0=None)
+    min_bsx = 0
+    # minimum b-value to apply to precalc maps
+    min_b = -3.78010917034472
+    # loop through all 15 indices and run inference for each set of initial conditions:
+    for idx in range(15):
         run_test(init, idx, min_bsx, min_b)
+
+    # if root_dir.startswith('/Users/MURPHYD/'):
+    #     # initialization file (contains params, points to files, etc)
+    #     init = root_dir + '/result/init_files/YRI.fish_cons94_new.BS1.6.CS0.0.NOT_STARTED.initial.txt'
+    #     # index of starting parameters to use (0-14)
+    #     idx = 0
+    #     # minimum b-value to apply *within optimization* (0=None)
+    #     min_bsx = 0
+    #     # minimum b-value to apply to precalc maps
+    #     min_b = -3.78010917034472
+    #
+    # # take arguments from the command line (used in cluster)
+    # else:
+    #     if len(argv) != 5:
+    #         print('usage: cluster_runinf <init> <idx> <min_bsx> <min_b')
+    #         exit(1)
+    #     init = argv[1]
+    #     idx = int(argv[2])
+    #     min_bsx = eval(argv[3])
+    #     min_b = eval(argv[4])
+    #     if min_b is not None:
+    #         min_b = np.log(min_b)
+    # run_test(init, idx, min_bsx, min_b)
 
 
 if __name__ == '__main__':
