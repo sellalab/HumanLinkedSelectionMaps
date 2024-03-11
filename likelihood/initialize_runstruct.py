@@ -29,7 +29,7 @@ dpop = None
 # population to use for neutral polymorphism
 neut = 'YRI'
 # the background selection map to use
-b_an_1 = 'fish_cons94_new'
+b_an_1 = 'cadd94_gmask_v1.6_without_bstat'
 # the directory where bmaps are stored (same as the token used for the map names)
 bdir = b_an_1
 # token used for saved run files (in this case we're using the ID of the bmap as token)
@@ -46,7 +46,6 @@ a = RunStruct(nspc=ns, wind=wn, slid=sl, tkn=tk, ncon=ncons,
               cdfe=(),
               )
 
-a.files.fnm = root_dir + '/data/nmsk/{ch}.euarchontoglires.0.35.MaskLowRecomb.nmsk.npz'
 # turn of one of the experimental threshold params (not used in any paper/appendix results)
 a.fixed.cth = None
 # save the RunStruct data structure as a text file that can be read to initalize a RunStruct later
