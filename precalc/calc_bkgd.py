@@ -143,7 +143,7 @@ def main_local():
 #         cst.bmap_dir += '_pts'
 #         cst.reset()
 #  
-#     for pidx in xrange(int(cst.chlen / plen)):
+#     for pidx in range(int(cst.chlen / plen)):
 #         calc_bkgd(cst, coef, an, udel, fexe, pidx, plen, pts)
 # =============================================================================
  

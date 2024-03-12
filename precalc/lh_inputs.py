@@ -755,7 +755,20 @@ def save_arrays(cst, plen):
     :param plen:
     :rtype: None
     """
-    # get arrays of data compressed into segments
+    # make directories for saving compressed data files:
+    cmpdir = root_dir + '/compress'
+    os.makedirs(cmpdir, exist_ok=True)
+    for d in ['parr', 'darr', 'narr', 'uarr', 'barr', 'carr', 'sarr']:
+        os.makedirs('{}/{}'.format(cmpdir, d), exist_ok=True)
+
+    # get arrays of data compressed into segments:
+    # sg: segment arrays
+    # bs: background selection map arrays
+    # cs: classic sweep map arrays
+    # nu: neutral mutation rate arrays
+    # nt: neutral polymorphism data arrays
+    # dv: divergence data arrays (not used in current build)
+    # pl: polymorphic site count arrays (not used in current build)
     sg, bs, cs, nu, nt, dv, pl = get_arrays(cst, plen)
 
     # save each compressed data array
@@ -773,7 +786,6 @@ def save_arrays(cst, plen):
 
 
 def main():
-
     # # local
     # if root_dir.startswith('/Users/MURPHYD/'):
     init = root_dir + '/result/init_files/YRI.cadd94_gmask_v1.6_without_bstat.BS1.6.CS0.0.NOT_STARTED.initial.txt'
@@ -783,7 +795,6 @@ def main():
     for chrom in human_autosomes:
         # initialize ChromStruct from file
         cst = ChromStruct(chrom=chrom, init=init)
-
         # generate all the compressed arrays and save
         print('Preparing inputs for {}...\n'.format(chrom))
         save_arrays(cst, plen)

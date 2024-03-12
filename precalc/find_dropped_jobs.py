@@ -101,7 +101,7 @@ def main_1():
         for tx in tex:
             t = 10 ** -tx
             t_str = '{:.8f}'.format(t)
-            for ix in xrange(get_imax(ch, bl)+1):
+            for ix in range(get_imax(ch, bl)+1):
                 f = f_fmt.format(c=ch, a=an, t=t_str, i=ix, l=l_str)
                 cmd = c_fmt.format(sh=f_sh, f=f_init, c=ch, a=an, t=tx, i=ix)
                 under_limit = (job_count <= job_limit)

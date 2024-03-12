@@ -25,7 +25,7 @@ def process_partition_files(cst, anno, t, plen):
 
     # initialize an empty bmap reader
     bmr = BkgdMapReader()    
-    for i in xrange(int(cst.chlen / plen) + 1 ):
+    for i in range(int(cst.chlen / plen) + 1 ):
         # original file path
         f = cst.bkgd_file(anno, t, pidx=i, plen=plen)
         

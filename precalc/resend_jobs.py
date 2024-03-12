@@ -48,7 +48,7 @@ def main_2():
     args = {}
     for tx in [-4.5, -4, -3.5, -3, -2.5, -2]:
         tstr = '{:.8f}'.format(10**tx)
-        for c in xrange(1,23):
+        for c in range(1,23):
             ch = 'chr{}'.format(c)
             f1 = ffmt1.format(ch, anno, tstr)
             f2 = ffmt2.format(ch, anno, tstr)

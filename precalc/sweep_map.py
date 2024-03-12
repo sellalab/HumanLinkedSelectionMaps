@@ -81,7 +81,7 @@ def remove_duplicates(positions, rates, cmp_type=1):
     and highest associated position with each
     """
     pos, r = [positions[0]], [rates[0]]
-    for i in xrange(1, len(rates)):
+    for i in range(1, len(rates)):
         # only keep consecutive sites when the rate changes within the rules
         if ineq_rule(r1=rates[i], r2=r[-1], cmp_type=cmp_type):
             r.append(rates[i])
@@ -107,7 +107,7 @@ def interp_segments(positions, rates):
     # convert positions to segments between each point
     segments = positions - np.concatenate([[0], positions[:-1]])
     seg, r = [segments[0]], [rates[0]]
-    for i in xrange(1, len(rates)):
+    for i in range(1, len(rates)):
         # check 2 sample points between rate_1 and rate_2: 25% and 75%
         # from rate_1 to rate_2
         rate_1, rate_2 = r[-1], rates[i]
@@ -132,7 +132,7 @@ def interp_segments(positions, rates):
             steps = 0
         # for each 1% increase a new segment is created
         if steps > 1:
-            for n in xrange(1, steps):
+            for n in range(1, steps):
                 # reduce the full segment by each inner segment
                 segments[i] -= size
                 seg.append(size)
