@@ -331,7 +331,7 @@ def get_nonafr_archaic(cst, nmsk, segs, pop_id):
 
     # fill probs for each 500 bp segment
     probs = np.zeros(shape=cst.chlen)
-    for i in xrange(len(pos)):
+    for i in range(len(pos)):
         pi = pos[i]
         probs[pi:pi+500] = prob[i]
 

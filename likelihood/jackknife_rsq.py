@@ -19,7 +19,7 @@ def main():
     #     exit(1)
 
     if len(argv) != 2:
-        print 'usage: jackknife_rsq <anno>'
+        print('usage: jackknife_rsq <anno>')
         exit(1)
 
     anno = argv[1]
@@ -42,7 +42,7 @@ def main():
 
     # TEMPORARY FIX FOR ABERRANT SUBSTITUTION RATE ESTIMATES!!!
     mnu2 = (nu <= cutoff)
-    bs, nu, nt, dv = [a[mnu2] for a in bs, nu, nt, dv]
+    bs, nu, nt, dv = [a[mnu2] for a in [bs, nu, nt, dv]]
     msk &= mnu1[:,0]
 
     # convert segments into positions for r r squared calc

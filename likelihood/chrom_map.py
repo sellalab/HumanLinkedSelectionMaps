@@ -4,7 +4,6 @@ __author__ = 'davidmurphy'
 import os
 import numpy as np
 from sys import argv
-from itertools import izip
 from likelihood.cllh_functions import predicted_pi
 from classes.runstruct import ChromStruct, root_dir
 from precalc.lh_inputs import load_saved, adjust_arrays
@@ -27,7 +26,7 @@ def predicted_and_observed(cum_pos, ms, nt, dv, pred, scale, slide=None):
 
     # prepare empty lists for each relevant statisic
     obs, prd, num = [], [], []
-    for (i, j) in izip(idx, jdx):
+    for (i, j) in zip(idx, jdx):
         if j > i:
             # calculate average pi for the window
             pi = nt[i:j, 1].sum() / nt[i:j].sum()
@@ -54,11 +53,13 @@ def predicted_and_observed(cum_pos, ms, nt, dv, pred, scale, slide=None):
 
 def main():
     if len(argv) != 2:
-        print 'usage: calc_rsq <folder_name>'
+        print('usage: calc_rsq <folder_name>')
         exit(1)
     scale = 1e6
     slide = 0.5
     chrom = 'chr1'
+    leave_one_out = False
+    dropped_chrom = True
 
     fdir = root_dir + '/result/final_files/{}/'.format(argv[1])
     flist = [f for f in os.listdir(fdir) if f.endswith('composite.txt')]
@@ -84,7 +85,7 @@ def main():
         bs = bs[mnu2]
     if cs is not None:
         cs = cs[mnu2]
-    nu, nt, dv, pl = [a[mnu2] for a in nu, nt, dv, pl]
+    nu, nt, dv, pl = [a[mnu2] for a in [nu, nt, dv, pl]]
     # print msk.shape, mnu1.shape
     msk &= mnu1[:, 0]
 
@@ -92,6 +93,18 @@ def main():
     cum_pos = np.cumsum(sg)
     # calculate predicted pi from arrays and average of top 3 params
     pred = predicted_pi(cst.params, cst, nu, bs, cs)
+    if leave_one_out:
+        print('USING LEAVE ONE OUT PREDICTIONS MAP FOR RESULTS FOLDER: {}'.format(argv[1]))
+        f_pred = root_dir + '/result/final_files/{fldr}_jackknife_results/{fldr}.jkpred.npy'.format(fldr=argv[1])
+        pred = np.load(f_pred)[:len(mnu2)][mnu2]
+        # print('pred={} nu={}'.format(len(pred), len(nu)))
+        assert len(pred) == len(nu)
+
+    if dropped_chrom:
+        print('USING DROPPED CHROMOSOME PREDICTIONS MAP')
+        f_pred = root_dir + '/result/final_files/drop_chrom_results/drop_chrom_pred.npy'
+        pred = np.load(f_pred)[:len(mnu2)][mnu2]
+        assert len(pred) == len(nu)
 
     # apply error rate c threshold if in use
     if cst.fixed.cth is not None:
@@ -108,6 +121,8 @@ def main():
 
     # save predicted and observed diversity to file
     fpth = '/'.join(f_init.split('/')[:-1])
+    if leave_one_out:
+        fpth = root_dir + '/result/final_files/{fldr}_jackknife_results'.format(fldr=argv[1])
     if slide:
         fmt = fpth + '/{}.{:.2e}win_{:.1f}slide_pred_and_obs.txt'
         fout = fmt.format(chrom, scale, slide)

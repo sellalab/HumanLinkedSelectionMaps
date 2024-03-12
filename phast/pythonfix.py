@@ -6,7 +6,7 @@ import gzip
 
 zipped = gzip.open("zips/laurasiatheria.chr4.wig.gz", "a")
 
-for n in xrange(73, 935):
+for n in range(73, 935):
     cur = "wigs/n_{c}.laurasiatheria.chr4.wig".format(c=n)
     if os.path.isfile(cur):
         with open(cur, "r") as f:

@@ -14,7 +14,7 @@ def basic_sort(nt, ns, nu, pred, num):
     # get sorting indices based on prediction value
     sidx = np.argsort(pred)
     # sort predictions and div/poly data
-    nt, ns, nu, pred = [a[sidx].astype('f8') for a in nt, ns, nu, pred]
+    nt, ns, nu, pred = [a[sidx].astype('f8') for a in [nt, ns, nu, pred]]
     # calculate mean div
     meandiv = np.average(nu, weights=ns)
 
@@ -57,13 +57,17 @@ def sortbin_edges(sites, numbins):
 
 def main():
     if len(argv) != 2:
-        print 'usage: calc_rsq <folder_name>'
+        print('usage: calc_rsq <folder_name>')
         exit(1)
 
     fldr = argv[1]
     fdir = root_dir + '/result/final_files/{}/'.format(fldr)
     flist = [f for f in os.listdir(fdir) if f.endswith('composite.txt')]
     assert len(flist) == 1
+
+    # use leave one out predictions for result
+    leave_one_out = False
+    dropped_chrom = True
 
     # create paths to rsq and final init file
     f_init = fdir + flist[0]
@@ -92,7 +96,7 @@ def main():
         bs = bs[mnu2]
     if cs is not None:
         cs = cs[mnu2]
-    nu, nt, dv, pl = [a[mnu2] for a in nu, nt, dv, pl]
+    nu, nt, dv, pl = [a[mnu2] for a in [nu, nt, dv, pl]]
     msk &= mnu1[:,0]
 
     # use constant mutation rate for predictions!
@@ -111,6 +115,18 @@ def main():
         pii_avg = nu_pred * (cst.stat.meanpi / cst.stat.meandiv)
         # change prediction to error weighted prediction
         pred = ((1.0 - c) * pred) + (c * pii_avg)
+
+    if leave_one_out:
+        print('USING LEAVE ONE OUT PREDICTIONS MAP FOR RESULTS FOLDER: {}'.format(fldr))
+        f_pred = root_dir + '/result/final_files/{fldr}_jackknife_results/{fldr}.jkpred_const.npy'.format(fldr=fldr)
+        pred = np.load(f_pred)[mnu2]
+        assert len(pred) == len(nu)
+
+    if dropped_chrom:
+        print('USING DROPPED CHROMOSOME PREDICTIONS MAP')
+        f_pred = root_dir + '/result/final_files/drop_chrom_results/drop_chrom_pred_nuconst.npy'
+        pred = np.load(f_pred)[mnu2]
+        assert len(pred) == len(nu)
 
     # # get bmap to get percentiles
     # params = cst.params
@@ -138,6 +154,8 @@ def main():
     for n in [100, 250, 500, 1000, 2000]:
         sarr = basic_sort(nt, dv, nu, pred, n)
         sort_file = fdir + 'basic_sort_n{}.txt'.format(n)
+        if leave_one_out:
+            sort_file = fdir + 'basic_sort_n{}_leaveOneOut.txt'.format(n)
         np.savetxt(sort_file, sarr)
 
 

@@ -31,7 +31,7 @@ def run_mean_best(folder_name):
     # get the harmonic mean of the params
     prm_group = np.array([rlst[i].params for i in top3])
     avg_params = []
-    for i in xrange(len(rlst[0].params)):
+    for i in range(len(rlst[0].params)):
         m = harmonic_mean(prm_group[:,i])
         avg_params.append(m)
 
@@ -48,16 +48,20 @@ def run_mean_best(folder_name):
 
 
 def main():
-    if os.getcwd().startswith('/Users/davidmurphy/'):
-        fldr = 'nff2'
-        run_mean_best(fldr)
+    # folder name for the main CADD 6% results:
+    fldr = 'cadd94_gmask_v1.6_without_bstat'
+    run_mean_best(fldr)
 
-    else:
-        if len(argv) != 2:
-            print 'usage: mean_best <folder_name>'
-            exit(1)
-        else:
-            run_mean_best(argv[1])
+    # if os.getcwd().startswith('/Users/davidmurphy/'):
+    #     fldr = 'nff2'
+    #     run_mean_best(fldr)
+    #
+    # else:
+    #     if len(argv) != 2:
+    #         print('usage: mean_best <folder_name>')
+    #         exit(1)
+    #     else:
+    #         run_mean_best(argv[1])
 
 
 if __name__ == '__main__':

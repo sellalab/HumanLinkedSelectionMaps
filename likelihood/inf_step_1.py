@@ -76,7 +76,7 @@ def run_test(init, idx, min_bsx, min_b):
 
 
 def main():
-    # path to initialization file
+    # path to initialization file for the main CADD 6% results
     init = root_dir + '/result/init_files/YRI.cadd94_gmask_v1.6_without_bstat.BS1.6.CS0.0.NOT_STARTED.initial.txt'
     # minimum b-value to apply *within optimization* (0=None)
     min_bsx = 0

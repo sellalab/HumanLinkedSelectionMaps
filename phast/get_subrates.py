@@ -193,7 +193,7 @@ def extract_rates(ch, fpath):
     # # iterate over the chromosome in units of 20kb and fill gaps with nans
     # win = int(2e4)  # NOTE: use 20kb by default for now
     # new_table = []
-    # for start in xrange(0, chromosome_length(ch), win):
+    # for start in range(0, chromosome_length(ch), win):
     #     if start in sdict:
     #         row = [start] + sdict[start]
     #     else:
@@ -221,7 +221,7 @@ def fill_gaps(ch):
     # iterate over the chromosome in units of 20kb and fill gaps with nans
     win = int(2e4)  # use 20kb by default for now
     new_table = []
-    for start in xrange(0, chromosome_length(ch), win):
+    for start in range(0, chromosome_length(ch), win):
         if start in sdict:
             row = [start] + sdict[start]
         else:
@@ -362,7 +362,7 @@ def find_missing(ch, nspec, win):
     # chr10.10000000_10010000.exptotsub
     # run through expected files and print missing filenames
     shift = win / 2
-    for i in xrange(0, alen, shift):
+    for i in range(0, alen, shift):
         j = i+win
         fname = fpath + '/{}.{}_{}.exptotsub'.format(ch, i, j)
         if not os.path.isfile(fname):
@@ -586,7 +586,7 @@ def build_subcount_files(ch, nspec, win):
 
     # run through expected files and process them
     shift = win / 2
-    for i in xrange(0, alen, shift):
+    for i in range(0, alen, shift):
         # if bottom coordinate is larger than neutral pos, break
         if i > len(npos):
             err_msg('ERROR: INDEX={} EXCEEDS NEUTRAL MATRIX'.format(i))
@@ -681,7 +681,7 @@ def comb_subcount_files(ch, nspec, win):
 
 if os.getcwd().startswith('/Users/davidmurphy'):
     for ds in [1]:
-        for c in xrange(1, 23):
+        for c in range(1, 23):
             ch = 'chr{}'.format(c)
             interp_missing(ch, 8, 7000, ds)
             print '{} {}% shift done.'.format(ch, 100 / ds)

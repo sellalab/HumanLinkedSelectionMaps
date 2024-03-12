@@ -26,7 +26,7 @@ def jack_params(anno):
     udl = []
     pi0 = []
     clh = []
-    for jkidx in xrange(1441):
+    for jkidx in range(1441):
         ji = '{:04}'.format(jkidx)
         # set foldrer path to current jackknife index
         fldr = '{an}_jkidx_{ji}'.format(an=anno, ji=ji)

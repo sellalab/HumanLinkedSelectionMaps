@@ -52,7 +52,7 @@ def main_0():
     cfmt = '{pr} {ch} {ma} {st} {en} {wn}'
 
     # iterate over chunks of the chromosome and subdivide them into 20kb
-    for start in xrange(0, clen, int(size)):
+    for start in range(0, clen, int(size)):
         # format and execute the shell command on each chunk
         end = start+int(size)
         cmd = cfmt.format(pr=prog, ch=ch, ma=ma, st=start, en=end, wn=win)
@@ -88,7 +88,7 @@ def main_1():
     cfmt = '{pr} {ch} {st} {en} {wn}'
 
     # iterate over chunks of the chromosome and subdivide them into 20kb
-    for start in xrange(0, clen, int(size)):
+    for start in range(0, clen, int(size)):
         # format and execute the shell command on each chunk
         end = min(start+int(size), clen)
         cmd = cfmt.format(pr=prog, ch=ch, st=start, en=end, wn=win)

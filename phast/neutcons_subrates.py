@@ -9,7 +9,7 @@ from sys import stderr, stdout, argv
 from gzip import open as zopen
 from collections import Counter
 from datetime import datetime as dtime
-from itertools import izip, combinations
+from itertools import combinations
 from classes.runstruct import ChromStruct
 import data_processing.data_tools as dtl
 from data_processing.parse_cadd import CADDScore
@@ -65,7 +65,7 @@ def split_alignments(ma_fasta):
     assert all(len(s) == len(seqs[0]) for s in seqs)
 
     # create dict of name:seq pairs
-    fa_dict = dict(izip(names, seqs))
+    fa_dict = dict(zip(names, seqs))
 
     return fa_dict
 
@@ -83,7 +83,7 @@ def join_alignments(fa_dict, fa_name, nb=100, compress=False):
         f.write('> {}\n'.format(k))
         # split the sequence into nb length lines and write
         seq = fa_dict[k]
-        r = xrange(0, len(seq), nb)
+        r = range(0, len(seq), nb)
         f.write('\n'.join(''.join(seq[i:i+nb]) for i in r) + '\n')
     f.close()
 
@@ -149,7 +149,7 @@ def parse_exptotsub(xts_file, n_cells=16):
 
         # record the matrix
         if len(line) == n_cells + 1:
-            cur_mat.append(map(float, line[1:]))
+            cur_mat.append(list(map(float, line[1:])))
 
         # when current 16x16 matrix is complete, store in dict
         if len(cur_mat) == n_cells:
@@ -366,8 +366,8 @@ def main():
         ch, cons, pct_cons, mod = argv[1:]
         hcgo_conserved_phylofit(ch, cons, pct_cons, mod)
     else:
-        print 'usage_1: neutcons_subrates <chrom> <model>'
-        print 'usage_2: neutcons_subrates <chrom> <cons> <pcons> <model>'
+        print('usage_1: neutcons_subrates <chrom> <model>')
+        print('usage_2: neutcons_subrates <chrom> <cons> <pcons> <model>')
         exit(1)
 
 

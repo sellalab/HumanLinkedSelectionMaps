@@ -116,7 +116,7 @@ def predsort_cons(ch, fldr, idx):
     # with open(f_save, 'w') as f:
 
     # loop through neutral positions and do the following:
-    for i in xrange(len(pos)):
+    for i in range(len(pos)):
         # print out percentiles of progress
         if (i>0) and (i%pct == 0):
             if i/pct in [25, 50, 75]:
@@ -175,7 +175,7 @@ def mean_in_bins(arr, nbins):
     """get the mean of the array values in bins"""
     step = int(len(arr) / nbins)
     mean_arr = []
-    for i in xrange(0, len(arr), step):
+    for i in range(0, len(arr), step):
         a = np.average(arr[i:i+step], axis=0)
         mean_arr.append(a)
 

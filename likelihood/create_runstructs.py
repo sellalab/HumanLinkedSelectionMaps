@@ -177,7 +177,7 @@ a.save()
 #%% BS + NS/OTHER CONS
 b_an_1 = 'fish_cons94_gmask'
 bdir = b_an_1
-for pc in xrange(91, 99):
+for pc in range(91, 99):
     c_an_1 = 'nonsyn_fish_cons{}_gmask_hc_subs'.format(pc)
     c_an_2 = 'other_fish_cons{}_gmask_hc_subs'.format(pc)
     cdir = 'fish_cons{}_gmask_hc_subs'.format(pc)
@@ -200,7 +200,7 @@ for pc in xrange(91, 99):
 #%% BS + NS/OTHER CADD
 b_an_1 = 'cadd94_gmask'
 bdir = b_an_1
-for pc in xrange(91, 99):
+for pc in range(91, 99):
     c_an_1 = 'nonsyn_cadd{}_gmask_hc_subs'.format(pc)
     c_an_2 = 'other_cadd{}_gmask_hc_subs'.format(pc)
     cdir = 'cadd{}_gmask_hc_subs'.format(pc)
@@ -221,7 +221,7 @@ for pc in xrange(91, 99):
 
 
 #%% CS ONLY (NONSYN/OTHER CADD)
-for pc in xrange(91, 99):
+for pc in range(91, 99):
     c_an_1 = 'nonsyn_cadd{}_gmask_hc_subs'.format(pc)
     c_an_2 = 'other_cadd{}_gmask_hc_subs'.format(pc)
     cdir = 'cadd{}_gmask_hc_subs'.format(pc)
@@ -261,7 +261,7 @@ a.save()
 
 
 #%% CS ONLY (NONSYN/OTHER CONS)
-for pc in xrange(91, 99):
+for pc in range(91, 99):
     c_an_1 = 'nonsyn_fish_cons{}_gmask_hc_subs'.format(pc)
     c_an_2 = 'other_fish_cons{}_gmask_hc_subs'.format(pc)
     cdir = 'fish_cons{}_gmask_hc_subs'.format(pc)
@@ -686,7 +686,7 @@ for sp in spec.split():
                   )
     a.fixed.cth = None
     a.save()
-    file_names.append(a.txt_file)
+    # file_names.append(a.txt_file)
 
 
 #%% BS EXONIC/NONEXONIC
@@ -729,5 +729,27 @@ for b_an in [b_an_1, b_an_2]:
     a.fixed.cth = None
     a.save()
 
+
+#%% DROP EACH CHROM FROM DATASET
+
+for c in range(1, 23):
+    drop_chrom = 'chr{}'.format(c)
+    b_an_1 = 'cadd94_gmask_v1.6_without_bstat'
+    bdir = b_an_1
+    neut = 'YRI'
+    tk = b_an_1
+    a = RunStruct(nspc=ns, wind=wn, slid=sl, tkn=tk, ncon=ncons,
+                  npct=npct / 100.0, nval=nv, gmsk=gm,
+                  cons=cons, neut=neut, dpop=dpop,
+                  bs_annos=(b_an_1,),
+                  bdir=bdir,
+                  bdfe=(dfe_6pt,),
+                  cs_annos=(),
+                  cdfe=(),
+                  )
+    a.vars.drop_chrom = drop_chrom
+    a.fixed.cth = None
+    # a.txt_files = a.txt_file.replace(tk, tk+'_drop_{}'.format(drop_chrom))
+    a.save(txt_file=a.txt_file.replace(tk, tk+'_drop_{}'.format(drop_chrom)))
 
 #%%

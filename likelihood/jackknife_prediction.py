@@ -5,7 +5,7 @@ import os
 import numpy as np
 from sys import argv
 from likelihood.cllh_functions import predicted_pi
-from classes.runstruct import ChromStruct, root_dir
+from classes.runstruct import ChromStruct, root_dir, cst_from_fldr
 from precalc.lh_inputs import load_saved, adjust_arrays, get_jackknife_mask
 
 
@@ -40,7 +40,7 @@ def jackknife_prediction_vector(fl_name):
                 c = [f for f in f_list if 'composite' in f]
                 # should only have one composite file
                 if len(c) > 1:
-                    print "MULTIPLE COMPOSITES! {}".format(f_path)
+                    print("MULTIPLE COMPOSITES! {}".format(f_path))
 
                 # initialize RunStruct with composite file
                 f_init = '{}/{}'.format(f_path, c[0])
@@ -56,6 +56,7 @@ def jackknife_prediction_vector(fl_name):
                 jwin = cst.vars.jackknife_window
                 m = ~get_jackknife_mask(sg, jidx, jwin)
 
+                # print('upload?')
                 # get JUST jackknife region using mask
                 jsg, jnu, jnt, jdv, jpl = sg[m], nu[m], nt[m], dv[m], pl[m]
                 if bs is not None:
@@ -90,16 +91,20 @@ def jackknife_prediction_vector_2(anno):
     from jackknife sample where region was removed
     """
     # use init file for the jackknife folder to load arrays ONCE
-    f_init = ffmt.format(an=anno)
-    cst = ChromStruct(chrom='chr1', init=f_init)
+    # f_init = ffmt.format(an=anno)
+    # cst = ChromStruct(chrom='chr1', init=f_init)
+    cst = cst_from_fldr(anno)
     sg, bs, cs, nu, nt, dv, pl = load_saved(cst)
 
     # save predictions for each jackknife sample in dict with index as keys
     pred_list = []
-    for jkidx in xrange(1441):
+    # make a separate list for chunks of uniform prediction for sorted pred analysis
+    uniform_pred_list = []
+    for jkidx in range(1441):
         ji = '{:04}'.format(jkidx)
         # set foldrer path to current jackknife index
-        fldr = '{an}_jkidx_{ji}'.format(an=anno, ji=ji)
+        # fldr = '{an}_jkidx_{ji}'.format(an=anno, ji=ji)
+        fldr = '{an}_jackknife_results/{an}_jkidx_{ji}'.format(an=anno, ji=ji)
         fpath = final_dir + '/' + fldr
         # skip jkidx folder paths that dont exist
         if (not os.path.isdir(fpath)) or (len(os.listdir(fpath)) == 0):
@@ -109,7 +114,7 @@ def jackknife_prediction_vector_2(anno):
         c = [f for f in f_list if 'composite' in f]
         # should only have one composite file
         if len(c) > 1:
-            print "MULTIPLE COMPOSITES! {}".format(fpath)
+            print("MULTIPLE COMPOSITES! {}".format(fpath))
 
         # initialize RunStruct with composite file
         f_jk = '{}/{}'.format(fpath, c[0])
@@ -122,6 +127,7 @@ def jackknife_prediction_vector_2(anno):
 
         # get JUST jackknife region using mask
         jsg, jnu, jnt, jdv, jpl = sg[m], nu[m], nt[m], dv[m], pl[m]
+
         if bs is not None:
             jbs = bs[m]
         else:
@@ -134,10 +140,14 @@ def jackknife_prediction_vector_2(anno):
 
         # mask and rescale maps from jackknife region
         jbs, jcs, jnu = adjust_arrays(*args)[:3]
+        jnu_const = np.full(len(jnu), cst.stat.meandiv)
 
         # calculate predicted pi in jackknife region and add to list of blocks
         jk_pred = predicted_pi(jk_cst.params, jk_cst, jnu, jbs, jcs)
         pred_list.append(jk_pred)
+        # get predicted pi without in jackknife region without scaling by local substitution rate
+        jk_pred_const = predicted_pi(jk_cst.params, jk_cst, jnu_const, jbs, jcs)
+        uniform_pred_list.append(jk_pred_const)
 
     # concatenate predictions and save as single array
     save_dir = final_dir + '/{an}_jackknife_results/'.format(an=anno)
@@ -146,6 +156,8 @@ def jackknife_prediction_vector_2(anno):
 
     fpred = save_dir + '{an}.jkpred.npy'.format(an=anno)
     np.save(fpred, np.concatenate(pred_list))
+    fpred_const = save_dir + '{an}.jkpred_const.npy'.format(an=anno)
+    np.save(fpred_const, np.concatenate(uniform_pred_list))
 
 
 def main():
@@ -154,7 +166,7 @@ def main():
     #     exit(1)
     # jackknife_prediction_vector(argv[1])
     if len(argv) != 2:
-        print 'usage: jackknife_prediction <anno>'
+        print('usage: jackknife_prediction <anno>')
         exit(1)
     jackknife_prediction_vector_2(argv[1])
 

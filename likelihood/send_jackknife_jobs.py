@@ -27,6 +27,7 @@ def errmsg(msg):
     sys.stderr.write(msg+'\n')
     sys.stdout.flush()
 
+
 class JobSender:
     """a class that sends jackknife jobs and moniters job counts"""
     def __init__(self, f_init, istart, iend):
@@ -45,15 +46,14 @@ class JobSender:
 
     def _sendbatch(self):
         """send batch of jobs for the current jackknife index"""
-        for idx in xrange(15):
+        for idx in range(15):
             self._sendjob(idx)
 
     def _movefiles(self):
         """move jackknife step 1 files to a jkidx labeled folder"""
         # make new folder for jkidx
         fpath = self.jkfolder
-        if not os.path.isdir(fpath):
-            os.mkdir(fpath)
+        os.makedirs(fpath, exist_ok=True)
         # move all jkidx files to the new folder using glob patterns
         globpattern = '{}/*.{}.*'.format(final_dir, self.jkstring)
         jkfiles = glob.glob(globpattern)
@@ -198,7 +198,7 @@ class JobSender:
 
 def main():
     if len(sys.argv) != 4:
-        print 'usage: send_jackknife_jobs <f_init> <istart> <iend>'
+        print('usage: send_jackknife_jobs <f_init> <istart> <iend>')
         exit(1)
 
     # get command line args
@@ -213,4 +213,5 @@ def main():
 
 
 if __name__ == '__main__':
+    # print('newlines')
     main()

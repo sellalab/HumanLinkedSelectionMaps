@@ -22,16 +22,16 @@ def evaluate(cst, grad, test_prm):
     last_params = np.copy(params)
     last_nlp, last_dnlp = dserial_cllh(params, inputs)
 
-    for prm in xrange(7):
-        print 'param {}'.format(prm+1)
+    for prm in range(7):
+        print('param {}'.format(prm+1))
         # for x in np.logspace(-6, -2, 5):
         for x in [1e-6]:
             params[prm] -= params[prm] * x
             deltap = last_params[prm] - params[prm]
             nlp, dnlp = dserial_cllh(params, inputs)
-            print (last_nlp - nlp) / deltap, last_dnlp[prm]
+            print((last_nlp - nlp) / deltap, last_dnlp[prm])
             last_nlp, last_dnlp, last_params = nlp, dnlp, np.copy(params)
-        print '----\n'
+        print('----\n')
 
     return None
 
@@ -195,6 +195,40 @@ def serial_optimization(cst, grad=False):
     optimize(cst)
 
 
+def parallel_optimization(cst, use_basinhopping=False):
+    # get number of cores
+    n = cst.vars.num_cores
+
+    # set functions for optimization and parallelized threads
+    f_optimize, f_thread = dparallel_cllh, dloglh
+
+    # start processes prior to loading data
+    init_threads(nproc=n, func=f_thread)
+
+    # get inputs for optimization run
+    inputs = prepare_inputs(cst)
+
+    # set the inputs for each sub-process
+    set_fixed_params(inputs)
+
+    # set keyword arguments for optimizer function
+    cst.optimizer_inputs(func=f_optimize, args=(cst,))
+
+    # if not root_dir.startswith('/Users/davidmurphy'):
+    #     # run the optimization on the threads
+    #     if use_basinhopping:
+    #         # cst = basin_hopper(cst)
+    #         optimize(cst)
+    #
+    #     else:
+    #         # msg = 'running optimization\n'.format(str(cst.params))
+    #         # stderr.write(msg)
+    #         # stdout.flush()
+    #         optimize(cst)
+
+    optimize(cst)
+
+
 def optimize(cst):
     """
     Run optimization with one or more algorithms.
@@ -204,7 +238,6 @@ def optimize(cst):
     # if using simulation data with "true" params, record their CLH
     if cst.stat.true_params is not None:
         cst.stat.true_clh = dparallel_cllh(cst.stat.true_params, cst)
-
     # record the likelihood of initial params
     cst.stat.init_clh = dparallel_cllh(cst.stat.init_params, cst)
 
@@ -260,49 +293,16 @@ def optimize(cst):
     cst.save(txt_file=cst.final_file)
 
 
-def parallel_optimization(cst, use_basinhopping=False):
-    # get number of cores
-    n = cst.vars.num_cores
-
-    # set functions for optimization and parallelized threads
-    f_optimize, f_thread = dparallel_cllh, dloglh
-
-    # start processes prior to loading data
-    init_threads(nproc=n, func=f_thread)
-
-    # get inputs for optimization run
-    inputs = prepare_inputs(cst)
-
-    # set the inputs for each sub-process
-    set_fixed_params(inputs)
-
-    # set keyword arguments for optimizer function
-    cst.optimizer_inputs(func=f_optimize, args=(cst,))
-
-    # if not root_dir.startswith('/Users/davidmurphy'):
-    #     # run the optimization on the threads
-    #     if use_basinhopping:
-    #         # cst = basin_hopper(cst)
-    #         optimize(cst)
-    #
-    #     else:
-    #         # msg = 'running optimization\n'.format(str(cst.params))
-    #         # stderr.write(msg)
-    #         # stdout.flush()
-    #         optimize(cst)
-
-    optimize(cst)
-
-
 def run_inference(cst, parallel=True):
     # run in serial on a single core
     if not parallel:
         cst.vars.num_cores = 1
-        pass
+        serial_optimization(cst)
 
     # run threaded optimization on all available cores
     else:
         cst.vars.num_cores = cpu_count()
+        cst.vars.num_cores = 2
         assert cst.vars.num_cores > 1
         parallel_optimization(cst)
 

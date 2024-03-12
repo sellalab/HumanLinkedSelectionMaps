@@ -196,7 +196,7 @@ def main_0():
     nmsk = load_neutmask(cst)
 
     # for the start end range, create 20kb sub-alignments for phyloFit
-    for i in xrange(start, end, win):
+    for i in range(start, end, win):
         # slice region of interest from mask (adjust for 0-based coords)
         j = i+win
         region = nmsk[i:j]
@@ -305,7 +305,7 @@ def main_1():
     npos = np.where(nmsk == 1)[0]
 
     # for the start end range, create 20kb sub-alignments for phyloFit
-    for i in xrange(start, end, win):
+    for i in range(start, end, win):
         # set upper bound for region; don't exceed total length of FASTA
         j = min(len(npos)-1, i+win)
         # get PHYSICAL positions of i & j for writing subcount file
@@ -397,7 +397,7 @@ def main_2():
 
     # for the start end range, create 20kb sub-alignments for phyloFit
     shift = win / 10
-    for i in xrange(start, end, shift):
+    for i in range(start, end, shift):
         # set upper bound for region; don't exceed total length of FASTA
         j = min(len(npos)-1, i+win)
 
@@ -488,7 +488,7 @@ def main_3():
     # use steps that are 1/2 the window size for sliding windows
     step = win / 2
     # for the start end range, create N-kb sub-alignments for phyloFit
-    for i in xrange(start, end, step):
+    for i in range(start, end, step):
         # set upper bound for region; don't exceed total length of FASTA
         j = min(len(npos)-1, i+win)
 

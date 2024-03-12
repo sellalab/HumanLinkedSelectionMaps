@@ -342,7 +342,7 @@ def dpredicted_pi(params, cst, nu, bs, cs):
 
         # partial derivative for each weight
         dpii = []
-        for i in xrange(cst.bsparams):
+        for i in range(cst.bsparams):
             d = bs[:, i] * bwt[i] * dconst
             dpii.append(d)
 

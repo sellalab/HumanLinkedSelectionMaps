@@ -15,8 +15,15 @@ Usage:
 # GLOBAL MODULE PARAMETERS
 _state = 'null_state'
 _nproc = 0
-_func = lambda x: x
 _p, _q = [], []
+
+
+def null_func(x):
+    return x
+
+
+# _func = null_func
+global _func
 
 
 def set_state(new_state='null_state'):
@@ -38,7 +45,7 @@ def init_threads(nproc, func):
     _p, _q, = [], []
 
     # create processes by opening pipes
-    for _ in xrange(_nproc):
+    for _ in range(_nproc):
         parent_conn, child_conn = Pipe()
         p = Process(target=_worker, args=(child_conn,))
         p.start()

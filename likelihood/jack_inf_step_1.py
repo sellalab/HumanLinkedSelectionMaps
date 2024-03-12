@@ -59,7 +59,7 @@ def run_jackknife_test(init, idx, jidx, min_bsx=0):
 def main():
 
     if len(argv) != 4:
-        print 'usage: cluster_runinf <init> <idx> <jackidx>'
+        print('usage: cluster_runinf <init> <idx> <jackidx>')
         exit(1)
     init = argv[1]
     idx = int(argv[2])

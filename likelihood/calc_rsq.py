@@ -3,7 +3,6 @@ __author__ = 'davidmurphy'
 import os
 import numpy as np
 from sys import argv
-from itertools import izip
 from likelihood.cllh_functions import predicted_pi
 from classes.runstruct import ChromStruct, root_dir
 from precalc.lh_inputs import load_saved, adjust_arrays
@@ -26,7 +25,7 @@ def calc_rsquared(scale, cum_pos, ms, nt, dv, pred):
 
     # prepare empty lists for each relevant statisic
     obs, prd, num = [], [], []
-    for (i, j) in izip(idx, jdx):
+    for (i, j) in zip(idx, jdx):
         if j > i:
             # calculate average pi for the window
             pi = nt[i:j, 1].sum() / nt[i:j].sum()
@@ -53,7 +52,7 @@ def calc_rsquared(scale, cum_pos, ms, nt, dv, pred):
 
 def main():
     if len(argv) != 2:
-        print 'usage: calc_rsq <folder_name>'
+        print('usage: calc_rsq <folder_name>')
         exit(1)
     # folder_name = argv[1]
     # fdir = root_dir + '/result/final_files/{}/'.format(folder_name)
@@ -96,7 +95,7 @@ def main():
         bs = bs[mnu2]
     if cs is not None:
         cs = cs[mnu2]
-    nu, nt, dv, pl = [a[mnu2] for a in nu, nt, dv, pl]
+    nu, nt, dv, pl = [a[mnu2] for a in [nu, nt, dv, pl]]
     # print msk.shape, mnu1.shape
     msk &= mnu1[:,0]
 

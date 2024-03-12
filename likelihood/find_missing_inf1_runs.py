@@ -51,7 +51,7 @@ def find_missing_indices(directory):
     cmd = 'qsub -l mem=24G,time=16:: -cwd -j y -o {} {}'.format(log, job)
 
     # check against a list of all 15 iprm strings that SHOULD exist
-    all_iprm = ['iprm_{:02}'.format(i) for i in xrange(15)]
+    all_iprm = ['iprm_{:02}'.format(i) for i in range(15)]
     for idx in all_iprm:
         if idx not in existing_iprm:
             command = cmd.format(i=int(idx.split("_")[1]))
@@ -117,7 +117,7 @@ def get_missing_iprms(flist):
     """get list of missing indices from a folder of final inf run files"""
     ilist = [int(f.split('.')[6].split('_')[1]) for f in flist]
     imiss = []
-    for i in xrange(15):
+    for i in range(15):
         if i not in ilist:
             imiss.append(i)
 
@@ -145,7 +145,7 @@ def find_missing_jackknife_jobs(anno):
     slog2 = run_dir + '/{fldr}.inf2.log'
 
     # scan each jackknife index
-    for jkidx in xrange(1441):
+    for jkidx in range(1441):
         # set the current arg value for jkidx
         args['ji'] = '{:04}'.format(jkidx)
         # set foldrer path to current jackknife index
@@ -200,7 +200,7 @@ def compare_fish_cadd():
     an2 = 'cadd94_gmask'
 
     # scan each jackknife index
-    for jkidx in xrange(1441):
+    for jkidx in range(1441):
         # set the current arg value for jkidx
         ji = '{:04}'.format(jkidx)
         # set fish/cadd folder paths to current jackknife index
