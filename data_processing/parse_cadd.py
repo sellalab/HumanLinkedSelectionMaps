@@ -221,7 +221,7 @@ class CADDScore:
         """get segments from scores passing a certain threshold"""
         # create a binary mask based on over/under threshold
         mask = self.get_mask(pct)
-        print '{} {}'.format(self.chrom, mask.sum())
+        print('{} {}'.format(self.chrom, mask.sum()))
         segs = binary_mask_segments(mask)
         return segs
 

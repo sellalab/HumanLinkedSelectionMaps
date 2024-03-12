@@ -1,8 +1,6 @@
 import numpy as np
-from itertools import izip
-from data_tools import neutral_snps
-from data_processing.data_tools import chromosome_length
-from functions import count_all_pairs
+from data_processing.data_tools import neutral_snps, chromosome_length
+from data_processing.functions import count_all_pairs
 
 __author__ = 'davidmurphy'
 
@@ -193,9 +191,9 @@ def combine_segments(chrom, segments, values):
 
     # find min uniform segments of BS/CS and nu values
     newsegs, newvals = [], []
-    while any(i < len(s) - 1 for (i, s) in izip(idx, segments)):
+    while any(i < len(s) - 1 for (i, s) in zip(idx, segments)):
         # save min length segment in current row and with current values
-        smin = min(s[i] for (i, s) in izip(idx, segments))
+        smin = min(s[i] for (i, s) in zip(idx, segments))
         newsegs.append(smin)
 
         current_values = []
@@ -216,15 +214,15 @@ def combine_segments(chrom, segments, values):
         steps = idx.sum()
 
     # take the final segment lengths and values
-    smin = min(s[i] for (i, s) in izip(idx, segments))
-    assert all(s[i] == smin for (i, s) in izip(idx, segments))
+    smin = min(s[i] for (i, s) in zip(idx, segments))
+    assert all(s[i] == smin for (i, s) in zip(idx, segments))
 
     # append the fine segment lengths and values
     newsegs.append(smin)
     newsegs = np.array(newsegs)
     assert newsegs.sum() == chromosome_length(chrom)
 
-    newvals.append([v[i] for (i, v) in izip(idx, values)])
+    newvals.append([v[i] for (i, v) in zip(idx, values)])
     newvals = np.array(newvals)
 
     return newsegs, newvals
@@ -237,7 +235,7 @@ def join_pop_snps(snp_1, snp_2):
     # get the sample size for filling in gaps
     sample_1 = np.sum(snp_1[0, 1:])
     sample_2 = np.sum(snp_2[0, 1:])
-    print sample_1, sample_2
+    print(sample_1, sample_2)
 
     # get indices of existing SNPs for each pop
     si_1 = np.in1d(all_pos, snp_1[:,0])
@@ -295,7 +293,7 @@ def compress_data(neutmask, snpcnt, segments):
     # go through each segment and get the neutral and poly data for that seg
     snp_idx = 0
     seen_snps = 0
-    for i in xrange(len(end)):
+    for i in range(len(end)):
         st, en = start[i], end[i]
         # get the neutmask block for current segment
         nblk = nmsk[st:en]
@@ -341,7 +339,7 @@ def compress_data(neutmask, snpcnt, segments):
     # # array for data summaries in each segment
     # summaries = np.zeros(shape=(n, 5), dtype='f8')
     #
-    # for i in xrange(n):
+    # for i in range(n):
     #     # indices of snps in current segment of the chrom
     #     si, sj = sidx[i:i+2]
     #     # polymorph = the number of snps in the segment

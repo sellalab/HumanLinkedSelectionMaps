@@ -21,7 +21,7 @@ def merge(segments):
     nsegs = len(segments)
 
     # segments need to be pre-sorted by segment starts but they may overlap
-    assert all([segments[i][0] <= segments[i+1][0] for i in xrange(nsegs-1)])
+    assert all([segments[i][0] <= segments[i+1][0] for i in range(nsegs-1)])
 
     # initialize the current start and stop with the first segment
     (current_start, current_stop) = segments[0]
@@ -60,14 +60,14 @@ def merge_weighted(segments, values):
     nsegs = len(segments)
 
     # segments need to be pre-sorted by segment starts but they may overlap
-    assert all([segments[i][0] <= segments[i+1][0] for i in xrange(nsegs-1)])
+    assert all([segments[i][0] <= segments[i+1][0] for i in range(nsegs-1)])
 
     # initialize the current start and stop with the first segment
     current_start, current_stop = segments[0]
     current_value = values[0]
 
     # process the remaining segments merging where necessary
-    for idx in xrange(nsegs-1):
+    for idx in range(nsegs-1):
         start, stop = segments[idx+1]
         value = values[idx+1]
 

@@ -45,7 +45,7 @@ def gene_data(ucsc_file):
 
     genes = defaultdict(list)
     # TODO: this is just temporarily changed to get X programs on its own
-    # autosomes = ["chr{}".format(c) for c in xrange(1, 23)]
+    # autosomes = ["chr{}".format(c) for c in range(1, 23)]
     chromosomes = ['chrX']
 
     # some global stats for the run
@@ -106,10 +106,10 @@ def gene_data(ucsc_file):
         intron_bases_fraction = "{:.3f}".format(1.0 * intron_bases / chr_length[ch])
 
         # check that ordering is correct
-        assert all(exons[i][1] <= exons[i + 1][0] for i in xrange(len(exons) - 1))
-        assert all(cds[i][1] <= cds[i + 1][0] for i in xrange(len(cds) - 1))
-        assert all(utrs[i][1] <= utrs[i + 1][0] for i in xrange(len(utrs) - 1))
-        assert all(introns[i][1] <= introns[i + 1][0] for i in xrange(len(introns) - 1))
+        assert all(exons[i][1] <= exons[i + 1][0] for i in range(len(exons) - 1))
+        assert all(cds[i][1] <= cds[i + 1][0] for i in range(len(cds) - 1))
+        assert all(utrs[i][1] <= utrs[i + 1][0] for i in range(len(utrs) - 1))
+        assert all(introns[i][1] <= introns[i + 1][0] for i in range(len(introns) - 1))
 
         # increment global counters
         auto_bases        += chr_length[ch]
@@ -227,7 +227,7 @@ def merged_exons(ucsc_file, truncated=False, coding=False):
 
     # make a list of exonic region for each autosome stored in a dict
     genes = defaultdict(list)
-    autosomes = ["chr{}".format(c) for c in xrange(1, 23)]
+    autosomes = ["chr{}".format(c) for c in range(1, 23)]
 
     with open(ucsc_file, "r") as f:
         f.next()  # skip header
@@ -416,7 +416,7 @@ def main():
     # gcons = '/Users/davidmurphy/GoogleDrive/linked_selection/data/coords/gcons'
     #
     # # merging McVicker conserved sites
-    # for ch in xrange(2, 23):
+    # for ch in range(2, 23):
     #     input_files = [gcons + s for s in '/ex/chr{}_gcons_ex.bed'.format(ch), '/nex/chr{}_gcons_nex.bed'.format(ch)]
     #     output_file = gcons + '/segs/chr{}_gcons_segments.bed'.format(ch)
     #     joined = merge_conserved(file_names=input_files)
@@ -426,7 +426,7 @@ def main():
 
     genic_segments(ucsc_file=ucsc, outdir=gdir)
     # merged_exons(ucsc, coding=True)
-    # for c in xrange(1, 2):
+    # for c in range(1, 2):
     #     near_exons(chromosome=c, geneset="nr")
 
     # run:

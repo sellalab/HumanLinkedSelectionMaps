@@ -76,7 +76,7 @@ class ChromHMMDatabase:
             # sort the segments
             segs.sort(key=lambda r: r[0])
             # check the sorting
-            assert all(segs[i+1][0] >= segs[i][1] for i in xrange(len(segs)-1))
+            assert all(segs[i+1][0] >= segs[i][1] for i in range(len(segs)-1))
             # add lengths to total
             tot += sum(b-a for (a,b) in segs)
             # save to file

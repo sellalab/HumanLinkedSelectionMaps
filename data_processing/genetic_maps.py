@@ -126,7 +126,7 @@ plt.show()
 
 
 #%% make the YRI LD map
-for c in xrange(1,23):
+for c in range(1,23):
     chrom = 'chr{}'.format(c)
     f_in = anjali_template.format(ch=chrom)
     anjali2gmap(chrom, f_in, 'YRI_LD', 1e4)
@@ -195,7 +195,7 @@ def create_decode_maps(chrom, savefile=False):
         np.savetxt(f_save, new_gmap, fmt='%d %.10f %.6f', header=header)
 
 
-for c in xrange(1, 23):
+for c in range(1, 23):
     ch = 'chr{}'.format(c)
     create_decode_maps(ch, True)
 #%%

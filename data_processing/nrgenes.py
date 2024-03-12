@@ -86,7 +86,7 @@ def nrgenes(genelist):
         current = nr[-1]
 
         # all segments must be in order (overlap is possible for fully contiguous exons in the cds so <= is used)
-        assert all([gene.codingSegments[i][1] <= gene.codingSegments[i + 1][0] for i in xrange(gene.codingCount - 1)])
+        assert all([gene.codingSegments[i][1] <= gene.codingSegments[i + 1][0] for i in range(gene.codingCount - 1)])
 
         # if the gene overlaps with the last gene, replace shorter gene with longer gene
         # ** NOTE **
@@ -103,8 +103,8 @@ def nrgenes(genelist):
 
     # ** NOTE **
     # change this (01/14/16) so that overlap check is with respect to exonStart
-    # assert all([nr[i].codingSegments[-1][1] < nr[i+1].codingSegments[0][0] for i in xrange(len(nr)-1)])
-    assert all([nr[i].exonSegments[-1][1] <= nr[i + 1].exonSegments[0][0] for i in xrange(len(nr) - 1)])
+    # assert all([nr[i].codingSegments[-1][1] < nr[i+1].codingSegments[0][0] for i in range(len(nr)-1)])
+    assert all([nr[i].exonSegments[-1][1] <= nr[i + 1].exonSegments[0][0] for i in range(len(nr) - 1)])
 
     return nr
 

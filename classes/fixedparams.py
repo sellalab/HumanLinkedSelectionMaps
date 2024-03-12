@@ -1,4 +1,4 @@
-from dictlike import DictLike
+from classes.dictlike import DictLike
 import numpy as np
 
 __author__ = 'davidmurphy'
@@ -46,8 +46,8 @@ class FixedParams(DictLike):
         self.th_init = 0.01  # initial error rate c
         self.tau_init = -1.0
         # upper/lower param bound tuples (used in some optimizations)
-        bs_bounds = [(self.bsmin, self.bsmax) for _ in xrange(self.bn)]
-        cs_bounds = [(self.csmin, self.csmax) for _ in xrange(self.cn)]
+        bs_bounds = [(self.bsmin, self.bsmax) for _ in range(self.bn)]
+        cs_bounds = [(self.csmin, self.csmax) for _ in range(self.cn)]
         tau_bounds = [(self.taumin, self.taumax)]
         self.min_max_bounds = bs_bounds + cs_bounds + tau_bounds
         # TODO: temporary!

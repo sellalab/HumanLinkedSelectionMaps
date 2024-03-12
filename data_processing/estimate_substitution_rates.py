@@ -6,7 +6,6 @@ import re
 import time
 import subprocess
 import numpy as np
-from itertools import izip
 from gzip import open as zopen
 from collections import defaultdict
 from sys import stderr, stdout, argv
@@ -92,7 +91,7 @@ def split_alignments(ma_fasta):
     assert all(len(s) == len(seqs[0]) for s in seqs)
 
     # create dict of name:seq pairs
-    fa_dict = dict(izip(names, seqs))
+    fa_dict = dict(zip(names, seqs))
 
     return fa_dict
 
@@ -110,7 +109,7 @@ def join_alignments(fa_dict, fa_name, nb=100, compress=False):
         f.write('> {}\n'.format(k))
         # split the sequence into nb length lines and write
         seq = fa_dict[k]
-        r = xrange(0, len(seq), nb)
+        r = range(0, len(seq), nb)
         f.write('\n'.join(''.join(seq[i:i+nb]) for i in r) + '\n')
     f.close()
 
@@ -314,7 +313,7 @@ def check_bbin():
     # f_save = bin_dir + '/{}.pos.npz'
     f_save = bin_dir + '/{}.seg.npz'
 
-    # for bbin in xrange(100):
+    # for bbin in range(100):
     #     bbin_pos = []
     #     f_load = bin_dir + '/sorted_bin{}.npz'.format(bbin)
     #     bdata = np.load(f_load)['sg']
@@ -330,7 +329,7 @@ def check_bbin():
         nmsk = np.load(cst.neut_masks)['neutmask']
         # get mask of all segments for this chrom
         ch_int = int(ch[3:])
-        for bbin in xrange(100):
+        for bbin in range(100):
             bbin_pos = []
             f_load = bin_dir + '/sorted_bin{}.npz'.format(bbin)
             bdata = np.load(f_load)['sg']
@@ -404,7 +403,7 @@ def bbin_subcounts():
     phast_dir = '/ifs/scratch/c2b2/gs_lab/dam2214/scratch/phast'
     save_dir = phast_dir + '/runs/bbins'
     res = []
-    for bbin in xrange(100):
+    for bbin in range(100):
         # get matrix of sub counts
         mat = np.zeros(shape=(4, 4))
         f_name = '{}/bbin{}.exptotsub'.format(save_dir, bbin)
@@ -483,7 +482,7 @@ def process_neutral_segment(ch, start, end, win):
     npos = np.where(nmsk == 1)[0]
 
     # for the start end range, create 20kb sub-alignments for phyloFit
-    for i in xrange(start, end, win):
+    for i in range(start, end, win):
         # set upper bound for region; don't exceed total length of FASTA
         j = min(len(npos) - 1, i + win)
         # get PHYSICAL positions of i & j for writing subcount file
@@ -570,7 +569,7 @@ def combine_subcount_files(ch, win):
     rfmt = '{:.0f} {:.0f} {:.0f} {:.0f} {:.0f}  {:.0f}\n'
     n_missing = 0
     with open(f_save, 'w') as f:
-        for i in xrange(len(arrs)-1):
+        for i in range(len(arrs)-1):
             # get current line
             start1, end1, bases1, subs1, cpg1, bgc1 = arrs[i]
             # get following line
@@ -621,15 +620,15 @@ def main():
         start, end, win = map(int, map(float, argv[2:]))
         process_neutral_segment(ch, start, end, win)
     else:
-        print 'usage_1: estimate_substitution_rates <ch>'
-        print 'usage_2: estimate_substitution_rates <ch> <win>'
-        print 'usage_3: estimate_substitution_rates <ch> <start> <end> <win>'
+        print('usage_1: estimate_substitution_rates <ch>')
+        print('usage_2: estimate_substitution_rates <ch> <win>')
+        print('usage_3: estimate_substitution_rates <ch> <start> <end> <win>')
         exit(1)
 
 
 def main_2():
     if len(argv) != 3:
-        print 'usage: estimate_substitution_rates <folder> <bbin>'
+        print('usage: estimate_substitution_rates <folder> <bbin>')
     fldr, bbin = argv[1:]
     cst = cst_from_fldr(fldr)
     create_bbin_alignment(cst, bbin)
@@ -637,6 +636,6 @@ def main_2():
 
 if __name__ == '__main__':
     main_2()
-    # for c in xrange(2, 23):
+    # for c in range(2, 23):
     #     ch = 'chr{}'.format(c)
     #     combine_subcount_files(ch, 7000)

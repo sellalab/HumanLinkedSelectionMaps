@@ -1,4 +1,4 @@
-from dictlike import DictLike
+from classes.dictlike import DictLike
 
 __author__ = 'davidmurphy'
 
@@ -58,6 +58,9 @@ class Variables(DictLike):
         self.jackknife_window = 2e6
         self.jackknife_samples = 0
         self.jackknife_index = 0
+
+        # chromosome drop param
+        self.drop_chrom = None
 
         # simulation input params
         self.simulation_params = []

@@ -23,7 +23,7 @@ def intersect(segments1, segments2):
     # segments must be sorted and consecutive segments cannot overlap.
     # lengths must be non-negative
     for s in [segments1, segments2]:
-        assert all([s[i][1] < s[i + 1][0] for i in xrange(len(s) - 1)])
+        assert all([s[i][1] < s[i + 1][0] for i in range(len(s) - 1)])
         assert all([(start <= end) for (start, end) in s])
 
     # turn each list of segments into an iterator

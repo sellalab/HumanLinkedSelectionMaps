@@ -1,5 +1,5 @@
 # from scipy.optimize import LinearConstraint
-from dictlike import DictLike
+from classes.dictlike import DictLike
 import numpy as np
 
 __author__ = 'davidmurphy'

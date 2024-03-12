@@ -93,6 +93,10 @@ class FileStruct(DictLike):
             f_str = '{data}/nmsk/{{ch}}.{ncon}.{npct}.nmsk.npz'
         # f_str = '{data}/nmsk/{{ch}}.{outg}.{neut}.{tkn}.nmsk.npz'
         self.fnm = f_str.format(**kwd)
+        # path to substitution count files used for estimating neutral urate
+        #     sdir = rdir + 'aligned_{}_win_{}'.format(cst.nspc, cst.wind)
+        #         fsub = '{}/{}.subcount.filled.txt'.format(sdir, cst.chrom)
+        self.fsub = '{data}/phast/aligned_{nspc}_win_{wind}/{{ch}}.subcount.filled.txt'.format(**kwd)
 
         """
         PRECALCULATED LS MAPS & NEUTRAL DATA COMPRESSED IN SEGMENT GRID

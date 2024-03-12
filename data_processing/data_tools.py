@@ -469,7 +469,7 @@ def substitution_counts(neutmask, window, chrom, fout=None):
     # empty array for [window_end, tot_bases, tot_subs] for each window
     counts_array = np.zeros(shape=(tot_bins, 3), dtype='u4')
 
-    for idx in xrange(tot_bins):
+    for idx in range(tot_bins):
         i, j = int(idx*window), int((idx + 1)*window)
         # count match (1+3) and mismatch (2+6) in neutmask block
         nblk = neutmask[i:j]
@@ -602,7 +602,7 @@ def snpcount(fsnp, returnbases=False):
         re_snps = re.compile(
             '[\dX]{1,2}\s(\d{1,9})\s\d+\s\d+\s[ACGT]:(\d+)\s[ACGT]:(\d+)')
         with zopen(fsnp, 'r') as f:
-            ar = np.array(re_snps.findall(f.read()), dtype='u4').T
+            ar = np.array(re_snps.findall(f.read().decode('utf-8')), dtype='u4').T
         snppos = ar[0]
         rcount = ar[1]
         acount = ar[2]
@@ -635,7 +635,7 @@ def snp_types(chrom, fsnp, fanc, fout=None):
     msk = (aa != rbase) ^ (aa != abase)
 
     # filter non-valid sites
-    snppos, rbase, abase, aa = [ar[msk] for ar in snppos, rbase, abase, aa]
+    snppos, rbase, abase, aa = [ar[msk] for ar in [snppos, rbase, abase, aa]]
 
     # get sites where ref or alt match the ancestral state
     ridx = (aa == rbase)
@@ -698,7 +698,7 @@ def str2time(time_str):
             if v:
                 timedict[k] = float(v)
             else:
-                del timedict[k]
+                timedict[k] = 0
         return timedelta(**timedict)
     except ValueError:
         msg = 'Elapsed time format <{}> not recognized'

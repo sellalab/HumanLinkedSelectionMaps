@@ -2,14 +2,14 @@
 # todo: improve "filter" annotations processing - just dump all in one folder?
 
 from data_processing.data_tools import chromosome_length, str2time
-from optimizerparams import OptimizerParams
-from fixedparams import FixedParams
+from classes.optimizerparams import OptimizerParams
+from classes.fixedparams import FixedParams
 from collections import namedtuple
-from statistics import Statistics
-from filestruct import FileStruct
-from variables import Variables
-from dictlike import DictLike
-from itertools import izip
+from classes.statistics import Statistics
+from classes.filestruct import FileStruct
+from classes.variables import Variables
+from classes.dictlike import DictLike
+# from itertools import zip
 from time import strftime
 import numpy as np
 import re
@@ -28,11 +28,14 @@ goog_dir = '/Users/davidmurphy/GoogleDrive'
 # ROOT DIRECTORIES FOR MY COMPUTER AND CLUSTER
 if os.getcwd().startswith('/Users/davidmurphy'):
     root_dir = '{}/linked_selection'.format(goog_dir)
+elif os.getcwd().startswith('/Users/MURPHYD'):
+    # TODO: Allen - change this to your root directory
+    root_dir = '/Users/MURPHYD/Dropbox (OMRF)/linked_selection/lsm_run'
 else:
     root_dir = '/ifs/data/c2b2/gs_lab/dam2214/linked_selection'
 
 # HUMAN AUTOSOMES
-human_autosomes = tuple('chr{}'.format(c) for c in xrange(1, 23))
+human_autosomes = tuple('chr{}'.format(c) for c in range(1, 23))
 
 # DROSOPHILA AUTOSOMES
 dmel_autosomes = ('2L', '2R', '3L', '3R')
@@ -93,7 +96,7 @@ class Chromosome:
 
 class RunStruct(DictLike):
     """
-    The RunStruct is a central structure that configures all of the steps in the
+    The RunStruct is a central structure that configures all the steps in the
     pipeline required to generate maps of linked selection from prepared data
     files.
     """
@@ -148,21 +151,21 @@ class RunStruct(DictLike):
         try:
             assert eval(value_string) == attribute_value
         except ValueError:
-            cmp_arr = izip(eval(value_string), attribute_value)
+            cmp_arr = zip(eval(value_string), attribute_value)
             try:
                 assert all(np.allclose(v1, v2) for (v1, v2) in cmp_arr)
             except TypeError:
                 msg = 'I don\'t know'
-                print msg
+                print(msg)
         except AssertionError:
             msg = 'error saving {}\nnew: {}\nold: {}'
-            print msg.format(attribute_key, value_string, str(attribute_value))
+            print(msg.format(attribute_key, value_string, str(attribute_value)))
         except SyntaxError:
             msg = 'error saving {}\nnew: {}\nold: {}'
-            print msg.format(attribute_key, value_string, str(attribute_value))
+            print(msg.format(attribute_key, value_string, str(attribute_value)))
         except NameError:
             msg = 'error saving {}\nnew: {}\nold: {}'
-            print msg.format(attribute_key, value_string, str(attribute_value))
+            print(msg.format(attribute_key, value_string, str(attribute_value)))
 
         # return the readable string
         return value_string
@@ -174,12 +177,12 @@ class RunStruct(DictLike):
                  mask='strictMask',
                  ncon='euarchontoglires',
                  npct=0.35,
-                 nval=0,
+                 nval=1,
                  gmsk=0.0,
                  cons='primate',
                  outg='rheMac3',
-                 nspc=4,
-                 wind=5000,
+                 nspc=8,
+                 wind=6000,
                  slid=True,
                  neut='YRI',
                  dpop=None,
@@ -531,12 +534,12 @@ class RunStruct(DictLike):
         rem = '/ifs/data/c2b2/gs_lab/dam2214/pyLS'
 
         # help message prints on start
-        print 'local_root={}\nremote_root={}\n' \
+        print('local_root={}\nremote_root={}\n' \
               '"finish" + ' \
               'enter completes init_file with defaults in remaining fields\n' \
               '"exit" + ' \
               'enter kills the program without saving init_file\n' \
-              'note: string variables require quotes'.format(loc, rem)
+              'note: string variables require quotes'.format(loc, rem))
 
         # confirm preset values for each key or take new value
         # keys = 'root gmap mask ncon cons outg neut phase token ' \
@@ -544,60 +547,60 @@ class RunStruct(DictLike):
         keys = ['neut', 'tkn', 'bscl', 'bs_annos', 'bdir',
                 'bdfe', 'methods']
 
-        for k in keys:
-
-            # enter the input for the key
-            next_prompt = 'press enter if {}={} or enter an alternative: '
-            nextinput = raw_input(next_prompt.format(k, self[k]))
-
-            # up to 5 tries to rename the values for each key in keys
-            tries = 0
-            while True:
-
-                # don't allow more than 5 tries
-                if tries > 5:
-                    max_tries = 'too many input errors -- {} set to {}'
-                    print max_tries.format(k, self[k])
-                    break
-
-                # accept the default value and continue
-                elif nextinput == '':
-                    break
-
-                # finish with defaults for the remaining fields
-                elif nextinput == 'finish':
-                    self.reset()
-                    savetxt = self.txt_file.replace(self.root, savedir)
-                    fin_cmmd = 'defaults for remaining fields; saving as:\n{}'
-                    print fin_cmmd.format(savetxt)
-                    self.save(txt_file=savetxt)
-                    exit(1)
-
-                # kill the program without saving
-                elif nextinput == 'exit':
-                    print 'exiting without saving an init file'
-                    exit(1)
-
-                # try the user input
-                else:
-                    try:
-                        self[k] = eval(nextinput)  # try setting the value
-                        break
-                    except SyntaxError:
-                        tries += 1  # count up the failed attempts
-                        err = 'press enter if {}={} or enter an alternative: '
-                        nextinput = raw_input(err.format(k, self[k]))
-                    except NameError:
-                        tries += 1
-                        err = 'press enter if {}={} or enter an alternative: '
-                        nextinput = raw_input(err.format(k, self[k]))
-
-        # reset the RunStruct and save an init file to the current environment
-        self.reset()
-        savetxt = self.txt_file.replace(self.root, savedir)
-        self.save(txt_file=savetxt)
-
-        print 'init file saved as:\n{}'.format(savetxt)
+        # for k in keys:
+        #
+        #     # enter the input for the key
+        #     next_prompt = 'press enter if {}={} or enter an alternative: '
+        #     nextinput = raw_input(next_prompt.format(k, self[k]))
+        #
+        #     # up to 5 tries to rename the values for each key in keys
+        #     tries = 0
+        #     while True:
+        #
+        #         # don't allow more than 5 tries
+        #         if tries > 5:
+        #             max_tries = 'too many input errors -- {} set to {}'
+        #             print(max_tries.format(k, self[k]))
+        #             break
+        #
+        #         # accept the default value and continue
+        #         elif nextinput == '':
+        #             break
+        #
+        #         # finish with defaults for the remaining fields
+        #         elif nextinput == 'finish':
+        #             self.reset()
+        #             savetxt = self.txt_file.replace(self.root, savedir)
+        #             fin_cmmd = 'defaults for remaining fields; saving as:\n{}'
+        #             print(fin_cmmd.format(savetxt))
+        #             self.save(txt_file=savetxt)
+        #             exit(1)
+        #
+        #         # kill the program without saving
+        #         elif nextinput == 'exit':
+        #             print('exiting without saving an init file')
+        #             exit(1)
+        #
+        #         # try the user input
+        #         else:
+        #             try:
+        #                 self[k] = eval(nextinput)  # try setting the value
+        #                 break
+        #             except SyntaxError:
+        #                 tries += 1  # count up the failed attempts
+        #                 err = 'press enter if {}={} or enter an alternative: '
+        #                 nextinput = raw_input(err.format(k, self[k]))
+        #             except NameError:
+        #                 tries += 1
+        #                 err = 'press enter if {}={} or enter an alternative: '
+        #                 nextinput = raw_input(err.format(k, self[k]))
+        #
+        # # reset the RunStruct and save an init file to the current environment
+        # self.reset()
+        # savetxt = self.txt_file.replace(self.root, savedir)
+        # self.save(txt_file=savetxt)
+        #
+        # print('init file saved as:\n{}'.format(savetxt))
 
     def cur_params(self, nlp):
         """record the current batch of optimization results"""
@@ -608,7 +611,7 @@ class RunStruct(DictLike):
         px = [p for p in self.params] + [nlp]
 
         # create a list of formatting
-        idx = xrange(1, len(px) + 1)
+        idx = range(1, len(px) + 1)
         fmts = ['{:>17.10e} ' if i % 4 else '{:>17.10e}\n' for i in idx]
 
         # join char joins optimization cycle entries
@@ -640,14 +643,14 @@ class RunStruct(DictLike):
     @property
     def bsidx(self):
         bidx = []
-        for i in xrange(0, self.bsparams, self.bsgrid):
+        for i in range(0, self.bsparams, self.bsgrid):
             bidx.append((i, i + self.bsgrid))
         return bidx
 
     @property
     def csidx(self):
         cidx = []
-        for i in xrange(0, self.csparams, self.csgrid):
+        for i in range(0, self.csparams, self.csgrid):
             i += self.bsparams
             cidx.append((i, i + self.csgrid))
         return cidx
@@ -675,11 +678,11 @@ class RunStruct(DictLike):
 
     @property
     def oid_mthd(self):
-        return dict((o, m) for o, m in izip(self.optimizers, self.methods))
+        return dict((o, m) for o, m in zip(self.optimizers, self.methods))
 
     @property
     def mthd_oid(self):
-        return dict((m, o) for o, m in izip(self.optimizers, self.methods))
+        return dict((m, o) for o, m in zip(self.optimizers, self.methods))
 
     """
     STATISTICS AND SUMMARIES
@@ -862,6 +865,11 @@ class ChromStruct(RunStruct):
     def nr_exons(self):
         """non-redundant exons bed file"""
         return self.files.fnrex.format(ch=self.chrom)
+
+    @property
+    def neut_subs(self):
+        """neutral substitution counts file for chromosome"""
+        return self.files.fsub.format(ch=self.chrom)
 
     """
     COMPRESSED ARRAY FILES

@@ -405,7 +405,7 @@ class DataStruct(ChromStruct):
         # empty array for [window_end, tot_bases, tot_subs] for each window
         counts_array = np.zeros(shape=(tot_bins, 3), dtype='u4')
 
-        for idx in xrange(tot_bins):
+        for idx in range(tot_bins):
             i, j = idx * window, (idx + 1) * window
             # count 0s, 1s and 2s in each window
             match, mismatch = np.bincount(neutmask[i:j], minlength=3)[1:]
@@ -442,7 +442,7 @@ class DataStruct(ChromStruct):
         # record [bases, subs] for each bin in every chrom
         counts_array = np.zeros(shape=(sum(lengths), 2))
         i = 0
-        for idx in xrange(22):
+        for idx in range(22):
             self.chrom = self.chroms[idx]
             # results/chrom[i] fill exactly lengths[i] rows in counting array
             counts = self.substitution_counts(msk_files[idx], window)[:, 1:]
@@ -787,7 +787,7 @@ class DataStruct(ChromStruct):
         # array for data summaries in each segment
         summaries = np.zeros(shape=(n, 4), dtype='f8')
 
-        for i in xrange(n):
+        for i in range(n):
             # indices of the SNP data based on counts
             si, sj = sidx[i:i+2]
             polymorph = sj - si

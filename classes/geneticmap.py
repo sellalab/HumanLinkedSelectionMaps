@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from runstruct import chromosome_length, root_dir
+from classes.runstruct import chromosome_length, root_dir
 
 
 __author__ = 'davidmurphy'

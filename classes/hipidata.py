@@ -188,7 +188,7 @@ class HiPiData(MapStruct):
         # join arrays together into one array for common masking/sorting operations
         vs = np.column_stack([ar[hi] for ar in self.chrom_tag, cumsites, self.nsites, self.nt])
         hdd_poly = []
-        for c in xrange(1, 23):
+        for c in range(1, 23):
             # isolate rows for current chrom
             ar = vs[vs[:, 0] == c]
             # sort rows by cumulative neutral site count

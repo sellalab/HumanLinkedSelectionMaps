@@ -61,7 +61,7 @@ def genmap_bin_cons(ch, bin_size, flag='depth'):
     l_fmt = '{} {}\n'
     with open(f_save, 'w') as f:
         f.write('#bin ' + ' '.join(cols) + '\n')
-        for i in xrange(len(bins)-1):
+        for i in range(len(bins)-1):
             # l_a, l_e, l_f = cnt[0][i], cnt[1][i], cnt[2][i]
             data = [c[i] for c in cnt]
             if all(c == 0 for c in (data)):
@@ -108,7 +108,7 @@ def genmap_compare_cadd(ch, bin_size, flag='depth'):
     cols = 'ape cadd'
     with open(f_save, 'w') as f:
         f.write('#bin ' + ' '.join(cols) + '\n')
-        for i in xrange(len(bins)-1):
+        for i in range(len(bins)-1):
             data = [c[i] for c in cnt]
             if all(c == 0 for c in (data)):
                 continue
@@ -155,7 +155,7 @@ def genmap_compare_exnex(ch, bin_size, flag='depth'):
     cols = 'all exonic other'.split()
     with open(f_save, 'w') as f:
         f.write('#bin ' + ' '.join(cols) + '\n')
-        for i in xrange(len(bins)-1):
+        for i in range(len(bins)-1):
             data = [c[i] for c in cnt]
             if all(c == 0 for c in (data)):
                 continue
@@ -216,7 +216,7 @@ def genmap_compare_bscs(ch, bin_size, flag='depth'):
     header = '#bin BS ' + ' '.join(str(p) for p in pct) + '\n'
     with open(f_save, 'w') as f:
         f.write(header)
-        for i in xrange(len(bins)-1):
+        for i in range(len(bins)-1):
             data = [c[i] for c in cnt]
             if all(c == 0 for c in (data)):
                 continue
@@ -257,7 +257,7 @@ def genmap_compare_cscs(ch, bin_size, flag='depth'):
     cols = 'CADD ape'
     with open(f_save, 'w') as f:
         f.write('#bin ' + cols + '\n')
-        for i in xrange(len(bins)-1):
+        for i in range(len(bins)-1):
             data = [c[i] for c in cnt]
             if all(c == 0 for c in (data)):
                 continue

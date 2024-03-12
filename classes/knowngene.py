@@ -144,15 +144,15 @@ class KnownGene(object):
         exonEnds = map(int, exonEnds.split(",")[:-1])
 
         # some constant rules that must be true
-        assert all(exonStarts[i] < exonEnds[i] for i in xrange(self.exonCount))
+        assert all(exonStarts[i] < exonEnds[i] for i in range(self.exonCount))
         assert (self.cdsStart >= exonStarts[0] and self.cdsEnd <= exonEnds[-1])
 
         # turn the starts and ends into a list of segment (start, stop) tuples
-        self.exonSegments = [(exonStarts[i], exonEnds[i]) for i in xrange(self.exonCount)]
+        self.exonSegments = [(exonStarts[i], exonEnds[i]) for i in range(self.exonCount)]
         self.exonLength = sum(s[1] - s[0] for s in self.exonSegments)
 
         # get the introns from the inner segments between exons
-        self.intronSegments = [(exonEnds[i], exonStarts[i + 1]) for i in xrange(self.exonCount - 1)]
+        self.intronSegments = [(exonEnds[i], exonStarts[i + 1]) for i in range(self.exonCount - 1)]
         self.intronLength = sum(s[1] - s[0] for s in self.intronSegments)
 
         assert self.intronLength + self.exonLength == self.txEnd - self.txStart
@@ -225,7 +225,7 @@ class KnownGene(object):
             self.utrCount = len(self.utrSegments)
 
             # utrs don't overlap, all segments sum to gene length, at most utr + cds has 2 more segments than exons
-            assert all(self.utrSegments[i][1] <= self.utrSegments[i + 1][0] for i in xrange(self.utrCount - 1))
+            assert all(self.utrSegments[i][1] <= self.utrSegments[i + 1][0] for i in range(self.utrCount - 1))
             assert self.exonLength == self.codingLength + self.utrLength
             assert self.exonCount <= self.codingCount + self.utrCount <= self.exonCount + 2
 
@@ -243,7 +243,7 @@ class KnownGene(object):
             # get the peri-exonic regions (100bp up and downstream of exons)
             self.splicing = []
             if self.exonCount > 1:
-                for i in xrange(self.exonCount - 1):
+                for i in range(self.exonCount - 1):
                     # if the spacing is > 200 create two separate segments
                     if self.intronSegments[i][1] - self.intronSegments[i][0] > 200:
                         lower = self.intronSegments[i][0], self.intronSegments[i][0] + 100
@@ -254,7 +254,7 @@ class KnownGene(object):
                     else:
                         self.splicing.append(self.intronSegments[i])
                 # assert non-overlapping and sorted
-                assert all(self.splicing[i][1] <= self.splicing[i + 1][0] for i in xrange(len(self.splicing) - 1))
+                assert all(self.splicing[i][1] <= self.splicing[i + 1][0] for i in range(len(self.splicing) - 1))
 
     @property
     def exons(self):
@@ -303,7 +303,7 @@ class KnownGene(object):
         :return mrna: the sequences of bases (with U = T) from the ref genome
         """
         if self.truncated:
-            print "Warning: gene {} has a truncated sequence".format(self.name)
+            print("Warning: gene {} has a truncated sequence".format(self.name))
 
         mrna = ""
         for (start, stop) in self.codingSegments:
@@ -332,14 +332,14 @@ class KnownGene(object):
         protein = ""
         mrna = self.mrna(ref).upper()  # up-case for safety
         if self.strand == "+":
-            for i in xrange(0, self.codingLength, 3):
+            for i in range(0, self.codingLength, 3):
                 codon = mrna[i:i + 3]
                 protein += genetic_code[codon]
 
         elif self.strand == "-":
             # reverse and complement the mrna for '-' strand
             mrna = "".join(map(complement_base, mrna[::-1]))
-            for i in xrange(0, self.codingLength, 3):
+            for i in range(0, self.codingLength, 3):
                 codon = mrna[i:i + 3]
                 protein += genetic_code[codon]
 
@@ -371,7 +371,7 @@ class KnownGene(object):
         else:
             # if it is in a segment other than 0, add the number of bases per segment before with the number of bases
             # into the segment where pos is found
-            segment_pos = sum([self.codingSegments[i][1] - self.codingSegments[i][0] for i in xrange(segment_idx)])
+            segment_pos = sum([self.codingSegments[i][1] - self.codingSegments[i][0] for i in range(segment_idx)])
             segment_pos += pos - self.codingSegments[segment_idx][0]
 
         # insert the alternate base to the new sequence

@@ -74,7 +74,7 @@ def unsplit_alignments(fa_dict, fa_name, nb=100, compress=False):
         f.write('> {}\n'.format(k))
         # split the sequence into nb length lines and write
         seq = fa_dict[k]
-        r = xrange(0, len(seq), nb)
+        r = range(0, len(seq), nb)
         f.write('\n'.join(''.join(seq[i:i+nb]) for i in r) + '\n')
     f.close()
 
@@ -589,7 +589,7 @@ def main_0():
         # create check the remaining bases for every alignment configuration
         spc = ['gorGor3', 'ponAbe2', 'panTro4', 'papHam1', 'chlSab1', 'macFas5',
                'nomLeu3', 'rheMac3']
-        for n in xrange(1, len(spc)+1):
+        for n in range(1, len(spc)+1):
             for cmb in combinations(spc, n):
                 l = 'hg19'
                 h = np.copy(isbase_dict['hg19'])

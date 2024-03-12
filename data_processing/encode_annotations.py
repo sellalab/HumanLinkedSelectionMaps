@@ -353,7 +353,7 @@ for anno in cre_lbls:
     cellcount = np.zeros(shape=25)
     for ch in human_autosomes:
         a = anno_dict[anno][ch]
-        for i in xrange(25):
+        for i in range(25):
             cellcount[i] += np.sum(a == i+1)
     overlap_count[anno] = cellcount
 

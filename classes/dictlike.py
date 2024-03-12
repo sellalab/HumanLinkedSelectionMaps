@@ -63,7 +63,7 @@ class DictLike(object):
                 setattr(self, key, value)
                 if verbose:
                     # print warning about the unrecognized Attribute
-                    print 'WARNING: Attribute "{}" not recognized but added anyway...'.format(key)
+                    print('WARNING: Attribute "{}" not recognized but added anyway...'.format(key))
 
     def setitems(self, items, safe=True):
         """

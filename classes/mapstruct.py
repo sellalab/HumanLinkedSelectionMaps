@@ -44,7 +44,7 @@ def _pcalc(prm=None, fx=None, hom=None, het=None, u=None, bs=None, cs=None,
     min_pi0 = fx.min_pi0
     max_pii = fx.max_pii
 
-    for _ in xrange(1):
+    for _ in range(1):
 
         # reduction in pi from bs -> exp(dot(bs, bs_weights))
         if bs is not None:

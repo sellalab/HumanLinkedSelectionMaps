@@ -69,7 +69,7 @@ def savitzky_golay(y, window_size, order, deriv=0, rate=1):
     try:
         window_size = np.abs(np.int(window_size))
         order = np.abs(np.int(order))
-    except ValueError, msg:
+    except ValueError:
         raise ValueError("window_size and order have to be of type int")
     if window_size % 2 != 1 or window_size < 1:
         raise TypeError("window_size size must be a positive odd number")
@@ -112,6 +112,7 @@ def rsquared_function(xobs, yobs):
     x_bar = np.mean(xobs)  # mean value of observed data
     ss_tot = np.sum(np.square(xobs - x_bar))  # total sum of squares -- proportional to variance in xobs data
     ss_res = np.sum(np.square(xobs - yobs))  # total sum of residuals
+    # print('x_bar={} ss_tot={} ss_res={}'.format(x_bar, ss_tot, ss_res))
     rsq = 1 - ss_res / ss_tot  # calculate R^2
     return rsq
 
@@ -230,7 +231,7 @@ def wilcoxon_signed(x1, x2):
     var_w = (nr / 6.0) * (nr + 1.0) * (2.0 * nr + 1.0)
     # 6) calculate p-value
     if nr < 10:
-        print 'Warning! small sample size -- nr = {}'.format(nr)
+        print('Warning! small sample size -- nr = {}'.format(nr))
     z = (w / np.sqrt(var_w))
     # use survival function to get 2-tailed p-value with abs(z)
     pval = 2.0 * norm.sf(abs(z))
@@ -271,7 +272,7 @@ def pairwise_divergence(r1, a1, r2, a2, altmatch=True):
     :return avg_div: average pairwise divergence between two pops 
     """
     # convert everything to floating point for safety (works on arrays and single numbers)
-    r1, a1, r2, a2 = [1.0 * x for x in r1, a1, r2, a2]
+    r1, a1, r2, a2 = [1.0 * x for x in [r1, a1, r2, a2]]
 
     n1 = r1 + a1  # population 1 sample
     n2 = r2 + a2  # population 2 sample
@@ -318,16 +319,11 @@ def expocdf(mu, x):
 
 def chromosome_length(chrom):
     # return the integer chromosome length in bp for chrom
-    chr_length = {'chrY': 59373566, 'chrX': 155270560, 'chr13': 115169878,
-                  'chr12': 133851895, 'chr11': 135006516, 'chr10': 135534747,
-                  'chr17': 81195210, 'chr16': 90354753, 'chr15': 102531392,
-                  'chr14': 107349540, 'chr19': 59128983, 'chr18': 78077248,
-                  'chr22': 51304566, 'chr20': 63025520, 'chr21': 48129895,
-                  'chr7': 159138663, 'chr6': 171115067, 'chr5': 180915260,
-                  'chr4': 191154276, 'chr3': 198022430, 'chr2': 243199373,
-                  'chr1': 249250621, 'chr9': 141213431, 'chr8': 146364022,
-                  'chr2L': 23011544, 'chr2R': 21146708, 'chr3L': 24543557,
-                  'chr3R': 27905053}
+    chr_length = dict(chrY=59373566, chrX=155270560, chr13=115169878, chr12=133851895, chr11=135006516, chr10=135534747,
+                      chr17=81195210, chr16=90354753, chr15=102531392, chr14=107349540, chr19=59128983, chr18=78077248,
+                      chr22=51304566, chr20=63025520, chr21=48129895, chr7=159138663, chr6=171115067, chr5=180915260,
+                      chr4=191154276, chr3=198022430, chr2=243199373, chr1=249250621, chr9=141213431, chr8=146364022,
+                      chr2L=23011544, chr2R=21146708, chr3L=24543557, chr3R=27905053)
     return chr_length[chrom]
 
 

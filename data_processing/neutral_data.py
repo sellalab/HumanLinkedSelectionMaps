@@ -1,5 +1,4 @@
 import numpy as np
-from itertools import izip
 import data_tools as dtools
 from functions import calc_pi
 from classes.bkgdmap import BkgdMap
@@ -7,7 +6,7 @@ from sys import argv, stderr, stdout
 from classes.runstruct import ChromStruct, default_filter_file, root_dir
 
 xdir = root_dir.replace('linked_selection', 'x_aut')
-
+fpth = 'NONE'
 
 __author__ = 'davidmurphy'
 
@@ -525,7 +524,7 @@ def bin_means(bin_idx, xval, aval):
     xavg, aavg = np.zeros(shape=nbins), np.zeros(shape=nbins)
 
     # get mean X/A values per bin
-    for i in xrange(nbins):
+    for i in range(nbins):
         # get (start, end) indices for X/A
         x_start, a_start = bin_idx[i]
         x_end, a_end = bin_idx[i+1]
@@ -657,7 +656,7 @@ def gc_content(chrom, outg, bminmax=None, cmin=None):
     cg = np.sum(np.in1d(ref[nidx], ['C', 'G']))
 
     # print info for the chromosome
-    print '{} {} {} FILTER={}'.format(chrom, at, cg, filt)
+    print('{} {} {} FILTER={}'.format(chrom, at, cg, filt))
 
 
 def main():
@@ -670,7 +669,7 @@ def main():
         # print 'B value filters:'
         # for c in chroms:
         #     gc_content(c, og, bminmax=bmnmx)
-        print '\ncM value filters:'
+        print('\ncM value filters:')
         for c in chroms:
             gc_content(c, og, cmin=cmin)
 

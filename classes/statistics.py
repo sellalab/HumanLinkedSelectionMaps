@@ -1,5 +1,5 @@
 from data_processing.data_tools import str2time
-from dictlike import DictLike
+from classes.dictlike import DictLike
 import numpy as np
 
 __author__ = 'davidmurphy'
