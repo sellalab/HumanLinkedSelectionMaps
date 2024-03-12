@@ -26,7 +26,7 @@ def get_bbins(tkn=None, nbins=100):
         sdir = root_dir + '/compress/sorted_bins'
 
     bins = []
-    for i in xrange(nbins):
+    for i in range(nbins):
         if tkn:
             f_name = sdir + '/sorted_bin{}.{}.npz'.format(i, tkn)
         else:
@@ -158,22 +158,22 @@ def get_centromere_dict():
     centro_dict = {}
     gfile = root_dir + '/data/coords/gaps/hg19_genome_gaps.txt'
     with open(gfile, 'r') as f:
-       f.next()
-       for line in f:
-           l = line.split()
-           ch, start, end, name = l[1], int(l[2]), int(l[3]), l[-2]
-           if name == 'centromere':
+        f.readline()
+        for line in f:
+            l = line.split()
+            ch, start, end, name = l[1], int(l[2]), int(l[3]), l[-2]
+            if name == 'centromere':
                 centro_dict[ch] = (start, end)
                 relstart = float(start) / chromosome_length(ch)
                 relend = float(end) / chromosome_length(ch)
-                print '{} {} {}'.format(ch, relstart, relend)
+                print('{} {} {}'.format(ch, relstart, relend))
 
     return centro_dict
 
 
 def get_telomere_dict():
     telo_dict = {}
-    for c in xrange(1, 23):
+    for c in range(1, 23):
         # set initial max to 0, initial min to 3e8
         ch = 'chr{}'.format(c)
         telo_dict[ch] = (1e4, chromosome_length(ch)-1e4)

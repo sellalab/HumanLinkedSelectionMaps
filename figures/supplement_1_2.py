@@ -325,7 +325,7 @@ hl, ol = errors_binned_by_exact_b_2(bdir, aut)
 plot_error_dist_2(hl, ol, bdir, titles[1], 'b')
 
 # aut = 'chr19 chr21 chr22'.split()
-# aut = ['chr{}'.format(c) for c in xrange(4, 23)]
+# aut = ['chr{}'.format(c) for c in range(4, 23)]
 aut = ['chr4']
 bd = 'exactPyB_vs_exactMcvB'
 hl, ol = errors_binned_by_exact_b_3(bd, aut)

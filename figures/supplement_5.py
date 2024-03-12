@@ -203,7 +203,7 @@ plt.yticks([])
 columns = ['annotation', 'ER', 'BS']
 data = []
 # add ape data
-for i in xrange(len(pct)):
+for i in range(len(pct)):
     lbl = 'vert. {}%'.format(int(100 - pct[i]))
     # u = '{:.2f}'.format(u_fis[i])
     # ur = '[{:.2f}, {:.2f}]'.format(s_ape[i] * ulo, s_ape[i] * uhi)
@@ -211,7 +211,7 @@ for i in xrange(len(pct)):
     ur = '[{:.2f}, {:.2f}]'.format(u_fis[i] / uhi, u_fis[i] / ulo)
     data.append((lbl, u, ur))
 # add CADD data
-for i in xrange(len(pct)):
+for i in range(len(pct)):
     lbl = 'CADD {}%'.format(int(100 - pct[i]))
     # u = '{:.2f}'.format(u_cad[i])
     # ur = '[{:.2f}, {:.2f}]'.format(s_cad[i] * ulo, s_cad[i] * uhi)
@@ -254,7 +254,7 @@ with open(ape_file, 'r') as f:
         ape_cnt[pct] = float(cnt)
 
 ape_udel = {}
-for pct in xrange(90, 99):
+for pct in range(90, 99):
     fldr = 'ape_cons{}_clean'.format(pct)
     ape_udel[pct] = cst_from_fldr(fldr).stat.utot[0]
 
@@ -267,7 +267,7 @@ with open(cadd_file, 'r') as f:
         cadd_cnt[pct] = float(cnt)
 
 cadd_udel = {}
-for pct in xrange(90, 99):
+for pct in range(90, 99):
     fldr = 'cadd{}'.format(pct)
     cadd_udel[pct] = cst_from_fldr(fldr).stat.utot[0]
 #

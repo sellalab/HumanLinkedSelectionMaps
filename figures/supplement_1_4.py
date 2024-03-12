@@ -300,8 +300,8 @@ def two_step_minimization_figure():
     plt.figure(figsize=(6.5, 2.16))
     plt.subplots_adjust(left=0.035, right=0.995, top=0.9, bottom=0.01,
                         wspace=0.2)
-    for i in xrange(5):
-        for j in xrange(3):
+    for i in range(5):
+        for j in range(3):
             q = 1 + i*3 + j
             ax = plt.subplot(5, 3, q)
             format_panels(ax)
@@ -329,7 +329,7 @@ def two_step_minimization_figure():
     plt.subplots_adjust(left=0.035, right=0.995, top=0.87, bottom=0.01,
                         wspace=0.2)
 
-    for j in xrange(3):
+    for j in range(3):
         ax = plt.subplot(3, 1, j + 1)
         format_panels(ax)
         params = winners[j]
@@ -379,8 +379,8 @@ def two_step_minimization_figure_update2021():
                         wspace=0.2)
 
     # initial params (input 1)
-    for i in xrange(5):
-        for j in xrange(3):
+    for i in range(5):
+        for j in range(3):
             q = 1 + i*3 + j
             ax = plt.subplot(5, 3, q)
             format_panels(ax)
@@ -408,7 +408,7 @@ def two_step_minimization_figure_update2021():
                         wspace=0.2)
 
     input2 = []
-    for j in xrange(3):
+    for j in range(3):
         ax = plt.subplot(3, 1, j + 1)
         format_panels(ax)
         # pick a NEW set for the output
@@ -465,7 +465,7 @@ def step_two_initial():
     plt.subplots_adjust(left=0.035, right=0.995, top=0.9, bottom=0.01,
                         wspace=0.2)
     all_params = []
-    for j in xrange(3):
+    for j in range(3):
         ax = plt.subplot(3, 1, j+1)
         format_panels(ax)
         params = np.random.dirichlet([1]*6)

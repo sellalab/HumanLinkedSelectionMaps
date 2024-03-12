@@ -101,7 +101,7 @@ titles = ['European data from CEU', 'South-Asian data from GIH',
           'East-Asian data from JPT', 'Amerindian data from MXL']
 use_pop = ['CEU', 'GIH', 'JPT', 'MXL']
 cols = ['steelblue', 'darkturquoise', 'purple', 'fuchsia']
-for i in xrange(4):
+for i in range(4):
     pop = use_pop[i]
     fldr = '{}_cadd94_gmask_v1_6_without_bstat'.format(pop)
     collated_ns_other_pops(fldr, fcl, xlab, cols[i], titles[i], letters[i])
@@ -409,7 +409,7 @@ titles = ['European data from CEU', 'South-Asian data from GIH',
           'East-Asian data from JPT', 'Amerindian data from MXL']
 use_pop = ['CEU', 'GIH', 'JPT', 'MXL']
 cols = ['steelblue', 'darkturquoise', 'purple', 'fuchsia']
-for i in xrange(4):
+for i in range(4):
     pop = use_pop[i]
     fldr = '{}_cadd94_gmask_v1_6_without_bstat'.format(pop)
     combined_chr1(fldr, cols[i], titles[i], letters[i])
@@ -503,7 +503,7 @@ color = 'purple'
 sname = 'JPT_collate_self_and_YRI_sort'
 colors = ['purple', 'darkturquoise', 'fuchsia', 'steelblue']
 pops = 'JPT GIH MXL CEU'.split()
-for i in xrange(4):
+for i in range(4):
     folder = pops[i] + '_cadd94_gmask'
     sname = pops[i] + '_collate_self_and_YRI_sort'
     collated_plot_compare_to_yri_pred(folder, pops[i], colors[i], sname)

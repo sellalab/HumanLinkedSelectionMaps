@@ -36,7 +36,7 @@ def neutcons_uratio_context(spec, mod='U3S', n_cell=64, nonbgc=False):
 
     # convert sub counts to rates
     n_contexts, c_contexts = [], []
-    for i in xrange(n_cell):
+    for i in range(n_cell):
         c_sum = np.sum(cmat[i, :])
         n_sum = np.sum(nmat[i, :])
         c_contexts.append(c_sum)
@@ -53,8 +53,8 @@ def neutcons_uratio_context(spec, mod='U3S', n_cell=64, nonbgc=False):
     cdict = defaultdict(dict)
     ndict = defaultdict(dict)
     triplets = list(product('ACGT', repeat=3))
-    for i in xrange(n_cell):
-        for j in xrange(n_cell):
+    for i in range(n_cell):
+        for j in range(n_cell):
             trip_1 = ''.join(triplets[i])
             trip_2 = ''.join(triplets[j])
             cdict[trip_1][trip_2] = cmat[i,j]
@@ -73,7 +73,7 @@ def neutcons_uratio_context(spec, mod='U3S', n_cell=64, nonbgc=False):
         if trip in seen_trips:
             continue
         seen_trips.append(trip)
-        # for i in xrange(3):
+        # for i in range(3):
         bases = list(trip)
         for b in 'ACGT':
             if (not nonbgc) and (bases[1] != b):
@@ -137,8 +137,8 @@ def neutcons_uratio_single(spec, mod='UNREST', n_cell=4, nonbgc=False, pc=95):
     nfmt = pdir + 'hcgo_neutral/{ch}.hcgo.neut.{md}.exptotsub'
 
     # initialize empty arrays for rates
-    cmat = np.zeros(shape=(n_cell, n_cell))
-    nmat = np.zeros(shape=(n_cell, n_cell))
+    cmat = np.zeros(shape=(n_cell, n_cell), dtype=float)
+    nmat = np.zeros(shape=(n_cell, n_cell), dtype=float)
 
     # combine data across chromosomes
     for chrom in human_autosomes:
@@ -146,12 +146,13 @@ def neutcons_uratio_single(spec, mod='UNREST', n_cell=4, nonbgc=False, pc=95):
         #     continue
         f_cxts = cfmt.format(ch=chrom, sp=spec, md=mod, pc=pc)
         f_nxts = nfmt.format(ch=chrom, md=mod)
+        print(parse_exptotsub(f_cxts, n_cell)['hg19'])
         cmat += parse_exptotsub(f_cxts, n_cell)['hg19']
         nmat += parse_exptotsub(f_nxts, n_cell)['hg19']
 
     # convert sub counts to rates
     n_contexts, c_contexts = [], []
-    for i in xrange(n_cell):
+    for i in range(n_cell):
         c_sum = np.sum(cmat[i, :])
         n_sum = np.sum(nmat[i, :])
         c_contexts.append(c_sum)
@@ -168,8 +169,8 @@ def neutcons_uratio_single(spec, mod='UNREST', n_cell=4, nonbgc=False, pc=95):
     cdict = defaultdict(dict)
     ndict = defaultdict(dict)
     bases = 'ACGT'
-    for i in xrange(n_cell):
-        for j in xrange(n_cell):
+    for i in range(n_cell):
+        for j in range(n_cell):
             b_1 = bases[i]
             b_2 = bases[j]
             cdict[b_1][b_2] = cmat[i,j]
@@ -217,7 +218,7 @@ def combined_ratios():
     all_r = []
     non_bgc = []
     s_r = []
-    for i in xrange(7):
+    for i in range(7):
         sp = spec[i]
         r, _, cpct = neutcons_uratio_context(sp)
         nr, _, ncpct = neutcons_uratio_context(sp, nonbgc=True)
@@ -228,14 +229,14 @@ def combined_ratios():
         s_r.append(np.average(sr))
         all_r.append(np.average(r))
         non_bgc.append(np.average(nr))
-        print sp, sr.mean(), r.mean(), nr.mean()
+        print(sp, sr.mean(), r.mean(), nr.mean())
 
     xv = np.arange(7)
     plt.figure(figsize=(12,4))
 
     # plot all subs bar
     plt.bar(xv-0.375, all_r, width=0.25, label='all substitutions')
-    for i in xrange(7):
+    for i in range(7):
         xi = xv[i]-0.375
         yi = all_r[i]
         plt.text(xi, yi*0.5, '{:.3f}'.format(yi), rotation=90, ha='center',
@@ -243,7 +244,7 @@ def combined_ratios():
 
     # plot nonBGC subs bar
     plt.bar(xv-0.125, non_bgc, width=0.25, label='non-BGC substitutions')
-    for i in xrange(7):
+    for i in range(7):
         xi = xv[i]-0.125
         yi = non_bgc[i]
         plt.text(xi, yi*0.5, '{:.3f}'.format(yi), rotation=90, ha='center',
@@ -251,7 +252,7 @@ def combined_ratios():
 
     # plot singleton subs bar
     plt.bar(xv+0.125, s_r, width=0.25, label='singleton model')
-    for i in xrange(7):
+    for i in range(7):
         xi = xv[i]+0.125
         yi = s_r[i]
         plt.text(xi, yi*0.5, '{:.3f}'.format(yi), rotation=90, ha='center',
@@ -289,18 +290,18 @@ def single_utypes():
 #%%
 def unrest_ratios():
     s_r = []
-    for i in xrange(7):
+    for i in range(7):
         sp = spec[i]
         sr, _, scpct = neutcons_uratio_single(sp)
         s_r.append(np.average(sr))
-        print sp, sr.mean()
+        print(sp, sr.mean())
 
     xv = np.arange(7)
     plt.figure(figsize=(12,4))
 
     # plot singleton subs bar
     plt.bar(xv, s_r, width=0.8, label='singleton model', color='firebrick')
-    for i in xrange(7):
+    for i in range(7):
         xi = xv[i]
         yi = s_r[i]
         plt.text(xi, yi*0.5, '{:.3f}'.format(yi), rotation=90, ha='center',
@@ -329,11 +330,11 @@ def unrest_ratios_all_pct(plot_type=None):
     percents = [91, 93, 94, 95, 97, 99]
     for (j, pct) in enumerate(percents):
         s_r = []
-        for i in xrange(8):
+        for i in range(8):
             sp = spec[i]
             sr, _, scpct = neutcons_uratio_single(sp, pc=pct)
             s_r.append(np.average(sr))
-            print pct, sp, sr.mean()
+            print(pct, sp, sr.mean())
 
         # plot singleton subs bar
         lbl = '{}%'.format(100-pct)
@@ -343,7 +344,7 @@ def unrest_ratios_all_pct(plot_type=None):
         else:
             plt.bar(xv+shift, s_r, width=width, label=lbl, color=cols[j])
 
-        for i in xrange(8):
+        for i in range(8):
             xi = xv[i]+shift
             if plot_type == 'udel':
                 ytext = 0.25

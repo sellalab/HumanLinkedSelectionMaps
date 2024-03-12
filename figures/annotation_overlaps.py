@@ -1,6 +1,7 @@
 __author__ = 'davidmurphy'
 
 import os
+import seaborn
 import numpy as np
 import matplotlib.pyplot as plt
 from collections import Counter
@@ -105,9 +106,9 @@ def save_overlap_analysis(annotation, compareto='genic'):
     overl_counts = [0] * num_annos
     for ch in human_autosomes:
         cst = ChromStruct(ch)
-        c1, cg, co = overlap_genic(cst, annotation)
+        c1, cg, co = overlap_genic(cst, annotation, compareto=compareto)
         n_cons += c1
-        for i in xrange(num_annos):
+        for i in range(num_annos):
             total_counts[i] += cg[i]
             overl_counts[i] += co[i]
 
@@ -128,6 +129,7 @@ a2 = 'cadd94_gmask_v1.6_without_bstat'
 # save_overlap_analysis(a2, 'genic')
 save_overlap_analysis(a1, 'cCRE')
 save_overlap_analysis(a2, 'cCRE')
+# autosave blah blah
 
 
 #%% PLOT OVERLAPS (VERSION USED IN S4)
@@ -163,7 +165,7 @@ def plot_combine_cadd_cons(anno_type='genic'):
 
         # get fraction of each annotation that is conserved
         fraction_in_cons = []
-        for i in xrange(anno_num):
+        for i in range(anno_num):
             frc = 1.0 * overl_counts[i] / total_counts[i]
             fraction_in_cons.append(frc)
         frac_in.append(fraction_in_cons)
@@ -293,7 +295,7 @@ bcounts = [np.bincount(ar) for ar in state_arrays]
 bcnt = [b[1:] for b in bcounts]
 #%%
 labels = ['transcription', 'promoter', 'enhancer']
-for i in xrange(3):
+for i in range(3):
     b = bcnt[i]
     label = states[i]
     x = np.arange(len(b)) + 1
@@ -360,7 +362,7 @@ for anno in annos:
     cellcount = np.zeros(shape=25)
     for ch in human_autosomes:
         a = anno_dict[anno][ch]
-        for i in xrange(25):
+        for i in range(25):
             cellcount[i] += np.sum(a == i+1)
     overlap_count[anno] = cellcount
 
@@ -402,7 +404,7 @@ def plot_overlap_analysis(annotation, label):
 
     # get fraction of each annotation that is conserved
     fraction_in_cons = []
-    for i in xrange(6):
+    for i in range(6):
         frc = 1.0 * overl_counts[i] / total_counts[i]
         fraction_in_cons.append(frc)
 

@@ -155,7 +155,7 @@ def rsq_3_size_gmask():
                         top=0.88)
 
     # plot subplot for each window size
-    for pidx in xrange(1, 4):
+    for pidx in range(1, 4):
         ax = plt.subplot(1, 3, pidx)
         format_panels(ax)
         # get column for current window size
@@ -560,7 +560,7 @@ def window_size_mean_and_std(win_size):
     windows = []
     n, k = [], []
     st, en = [], []
-    for c in xrange(1, 23):
+    for c in range(1, 23):
         f_in = ddir + '/chr{}.subcount.filled.txt'.format(c)
         start, end, win, subs = np.loadtxt(f_in, usecols=(0,1,2,3)).T
         size = end-start

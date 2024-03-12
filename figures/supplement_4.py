@@ -259,7 +259,7 @@ def rsq_3_size(flist, llist, sname, xlab, rotation=0, fletter='c'):
                         top=0.88)
 
     # plot subplot for each window size
-    for pidx in xrange(1, 4):
+    for pidx in range(1, 4):
         ax = plt.subplot(1, 3, pidx)
         format_panels(ax)
         # get column for current window size
@@ -370,16 +370,16 @@ def collate_and_sort(flist, llist, clist, sname, fletters=('d', 'e'),
             rdir)
         f_mcv = root_dir + '/result/collate/YRI.mcvicker.ref.clean.BS1.1.CS0.0.nonsyn.collated.npy'
         bins, div, pi, pr, cnts = np.load(f_ape).T
-        _, _, _, mcv, mcv_cnts = np.load(f_mcv).T
+        # _, _, _, mcv, mcv_cnts = np.load(f_mcv).T
         # bins, pi, div, pred, cnts = np.load(f_in).T
         obs = pi / cnts
         prd = pr / cnts
-        mcv /= mcv_cnts
+        # mcv /= mcv_cnts
         # y_max = pi0
         y_max = obs.mean()
         obs /= y_max
         prd /= y_max
-        mcv /= y_max
+        # mcv /= y_max
         # plt.title(rdir)
         # pc = '{}%'.format(100-int(rdir.split('_')[1][4:]))
         if not obs_flag:
@@ -466,8 +466,8 @@ def collate_and_sort(flist, llist, clist, sname, fletters=('d', 'e'),
 
         # if color == 'darkorange':
         #     plt.plot(prlo, pilo, lw=1.5, color=color)
-    print 'ylims {} {}'.format(ymin, ymax)
-    print 'xlims {} {}'.format(xmin, xmax)
+    print('ylims {} {}'.format(ymin, ymax))
+    print('xlims {} {}'.format(xmin, xmax))
     if 'McVicker' in llist:
         plt.ylim(0., 1.15)
         plt.xlim(0., 1.02)
@@ -498,7 +498,7 @@ def collate_and_sort(flist, llist, clist, sname, fletters=('d', 'e'),
     oplen = adlen * (xmax-xmin+0.04) / (ymax-ymin+0.04)
     rot = np.arctan((oplen/adlen)) * (180.0 / np.pi)
     # rot = 45 * oplen/adlen
-    print 'rotation = {}'.format(rot)
+    print('rotation = {}'.format(rot))
     plt.text(0.76, 0.64, r'$y=x$', rotation=rot, ha='left', va='bottom',
              color='k', alpha=1)
     plt.text(0.005, 0.93, fletters[0], transform=plt.gcf().transFigure,
@@ -1369,4 +1369,15 @@ llist2 = ['1.4', '1.6', '1.6 noB']
 rsq_3_size(flist, llist2, sname, xlab, rotation=0)
 # combined_chr1(flist, llist, clist, sname)
 # collate_and_sort(flist, llist, clist, sname, fletters=('E', 'F'))
+#%% FIGURE A48: COMPARE DIFFERENT LEAVE ONE OUT TO ALL DATA
+flist = ['cadd94_gmask_v1.6_without_bstat', 'cadd94_gmask_v1.6_without_bstat_jackknife_results',
+         'dropped_chrom_results']
+llist = ['all data', 'leave 2 Mb out', 'leave autosome out']
+clist = ['darkorange', 'deepskyblue', 'fuchsia']
+sname = 'compare_LOO'
+
+# rsq_3_size(flist, llist2, sname, xlab, rotation=0)
+# combined_chr1(flist, llist, clist, sname)
+collate_and_sort(flist, llist, clist, sname, fletters=('C', 'D'))
+
 #%%

@@ -102,7 +102,7 @@ cad_mnb_rsq.append(cadd_b0)
 mnb_all = '119 891 678 591 513 442 378 319 264 165'.split()
 bth_all = '200 300 400 450 500 550 600 650 700 800'.split()
 # get data from each folder
-for i in xrange(len(mnb_all)):
+for i in range(len(mnb_all)):
     # # get folders for each type of threshold
     # ape_bth_fldr = ape_bth_fmt.format(bth_all[i])
     # ape_mnb_fldr = ape_mnb_fmt.format(mnb_all[i])
@@ -245,7 +245,7 @@ def figure_5_diff_thresholds(flist, llist, clist, lclist, span=0.1):
              color='k', ls='--')
 
     # plot each data set
-    for i in xrange(len(flist)):
+    for i in range(len(flist)):
         fldr = flist[i]
         color = clist[i]
         lcolor = lclist[i]
@@ -456,7 +456,7 @@ combined_chr1(mnblist, llist, clist)
 
 #%% CHECK PEARSON ON THE MIDDLE 90% OF VALUES FOR THRESHOLDS
 def check_calibration_pearson(flist, llist):
-    for i in xrange(len(flist)):
+    for i in range(len(flist)):
         fldr = flist[i]
         labl = llist[i]
         sort_file = final_dir + '/{}/basic_sort_n{}.txt'.format(fldr, 100)

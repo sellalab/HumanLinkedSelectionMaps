@@ -1,6 +1,8 @@
 __author__ = 'davidmurphy'
 
+
 import os
+import seaborn
 import numpy as np
 import matplotlib.pyplot as plt
 from classes.runstruct import ChromStruct, root_dir
@@ -10,10 +12,13 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from matplotlib.patches import Rectangle
 from figures.common_functions import format_panels, cst_from_fldr
 
+# set the seaborn pallete
+seaborn.set_style()
 
 # u0 for scaling parameter estimates
 u0 = 1.4e-08
-final_dir = root_dir + '/result/final_files'
+final_dir = r'/Users/MURPHYD/Dropbox (OMRF)/linked_selection/result/final_files'
+# final_dir = root_dir + '/result/final_files'
 figdir = final_dir + '/mainfigs'
 
 
@@ -34,10 +39,13 @@ def predict_loess(xi, yi, wts, span, xtest):
     return np.copy(predict.values)
 
 
-def get_loess_line(fldr, span, return_points=False, load_con=False):
+def get_loess_line(fldr, span, return_points=False, load_con=False, loo=False):
     # load results in 2000 bins for LOESS plots
     fdir = final_dir + '/{}/'.format(fldr)
-    sort_file = final_dir + '/{}/basic_sort_n{}.txt'.format(fldr, 2000)
+    if loo:
+        sort_file = final_dir + '/{}/basic_sort_n{}_leaveOneOut.txt'.format(fldr, 2000)
+    else:
+        sort_file = final_dir + '/{}/basic_sort_n{}.txt'.format(fldr, 2000)
     div, pi, pred = np.loadtxt(sort_file).T
     # f_sort = fdir + 'sort_gc_cm_cn_il_n2000.txt'
     # div, pi, pred, gc, cn, cm, il = np.loadtxt(f_sort).T
@@ -45,7 +53,7 @@ def get_loess_line(fldr, span, return_points=False, load_con=False):
     # load sorted conserved separately (done using 0.05cM radius of sites)
     if load_con:
         fcon = final_dir + '/{}/sorted.cons.n2000.txt'.format(fldr)
-        cn = np.loadtxt(fcon)[:2000,2]
+        cn = np.loadtxt(fcon)[:2000, 2]
 
     rst = cst_from_fldr(fldr)
     pi0 = rst.stat.meanpi * rst.fixed.tau_init / rst.params[-1]
@@ -70,7 +78,7 @@ def get_loess_line(fldr, span, return_points=False, load_con=False):
 def compare_rsq(flist, llist, clist, sname, sfldr, fletter='B'):
     rsq_list = []
     w = np.log10(np.loadtxt(final_dir + '/{}/rsq.log'.format(flist[0]))[:16,0])
-    print w
+    print(w)
     for fl in flist:
         fsq_file = final_dir + '/{}/rsq.log'.format(fl)
         rs = np.loadtxt(fsq_file)[:16, 1]
@@ -78,7 +86,7 @@ def compare_rsq(flist, llist, clist, sname, sfldr, fletter='B'):
 
     plt.figure(figsize=(2.5,2.5))
     plt.subplots_adjust(right=1, top=1, left=0.25, bottom=0.17)
-    for i in xrange(len(flist)):
+    for i in range(len(flist)):
         rs = rsq_list[i]
         lab = llist[i]
         col = clist[i]
@@ -138,7 +146,7 @@ def figure_2A(fldr):
     plt.yticks([0, 0.5, 1, 1.5], x=0.0125)
     plt.ylim(0, 1.9)
     plt.xlabel('position on chromosome 1 (in Mb)', labelpad=2)
-    plt.xticks(xrange(25, 250, 50), y=0.05)
+    plt.xticks(range(25, 250, 50), y=0.05)
     plt.xlim(0, xi[-1])
 
     plt.legend(loc='lower center', ncol=2, frameon=1,
@@ -222,7 +230,7 @@ def figure_2AB(fldr, changebackground=False):
     ax2 = plt.subplot(133)
     format_panels(ax2)
 
-    for i in xrange(len(flist)):
+    for i in range(len(flist)):
         rs = rsq_list[i]
         lab = llist[i]
         col = clist[i]
@@ -337,7 +345,7 @@ def figure_2AB_for_guy(fldr, changebackground=False):
         ax2.patch.set_edgecolor('black')
         ax2.patch.set_linewidth(axis_lw)
 
-    for i in xrange(len(flist)):
+    for i in range(len(flist)):
         rs = rsq_list[i]
         lab = llist[i]
         col = clist[i]
@@ -395,12 +403,19 @@ def figure_2AB_final_format(fldr):
 
     # create new figure
     plt.figure(figsize=(6.4, 2))
-    plt.subplots_adjust(left=0.07, bottom=0.17, right=0.998, top=0.99,
+    plt.subplots_adjust(left=0.075, bottom=0.185, right=0.998, top=0.99,
                         wspace=0.32)
 
     # plot observed and predicted diversity in first 2/3 panel
-    ax1 = plt.subplot(1, 3, (1,2))
-    format_panels(ax1)
+    ax1 = plt.subplot(1, 3, (1, 2))
+    # format_panels(ax1)
+    gridargs = dict(color='k', linestyle='--', lw=0.2, alpha=0.5)
+    axis_lw = 0.2
+    ax1.set_facecolor('white')
+    ax1.grid(**gridargs)
+    ax1.axis('on')
+    ax1.patch.set_edgecolor('black')
+    ax1.patch.set_linewidth(axis_lw)
 
     plt.plot(xi, obs, label='observed', color='darkslategray', lw=1.1)
     plt.plot(xi, prd, color=color, lw=1.1, alpha=0.8, label=label)
@@ -421,23 +436,31 @@ def figure_2AB_final_format(fldr):
 
     # plot R^2 in last 1/3 panel
     ax2 = plt.subplot(133)
-    format_panels(ax2)
+    # format_panels(ax2)
+    ax2.set_facecolor('white')
+    ax2.grid(**gridargs)
+    ax2.axis('on')
+    ax2.patch.set_edgecolor('black')
+    ax2.patch.set_linewidth(axis_lw)
 
     # load R^2 data for all conserved and exonic conserved (ape)
-    rsq_folders = [fldr, 'fish_cons94_new',
-                   'cadd94_gmask_exonic','fish_cons94_new_exonic']
+    rsq_folders = [fldr, 'fish_cons94_new_jackknife_results',
+                   'cadd94_gmask_exonic', 'fish_cons94_new_exonic']
     rsq_shapes = ['o', '^', 'o', '^']
     rsq_labels = ['CADD', 'phastCons', r'$\mathrm{CADD_{e}}$',
                   r'$\mathrm{phastCons_{e}}$']
     rsq_colors = ['darkorange', 'deepskyblue', 'orangered', 'blue']
     rsq_list = []
-    w = np.log10(np.loadtxt(final_dir + '/{}/rsq.log'.format(fldr))[:16, 0])
+    w = np.log10(np.loadtxt(final_dir + '/{}/rsq.log'.format(rsq_folders[-1]))[:16, 0])
     for fl in rsq_folders:
-        fsq_file = final_dir + '/{}/rsq.log'.format(fl)
+        if 'jackknife' in fl:
+            fsq_file = final_dir + '/{}/{}.jkrsq.log'.format(fl, fl.replace('_jackknife_results', ''))
+        else:
+            fsq_file = final_dir + '/{}/rsq.log'.format(fl)
         rs = np.loadtxt(fsq_file)[:16, 1]
         rsq_list.append(rs)
 
-    for i in xrange(len(rsq_folders)):
+    for i in range(len(rsq_folders)):
         rs = rsq_list[i]
         lab = rsq_labels[i]
         shape = rsq_shapes[i]
@@ -448,7 +471,7 @@ def figure_2AB_final_format(fldr):
 
     plt.xlabel('window size (log-scale)', labelpad=2)
     xtck = [4, 4.5, 5, 5.5, 6]
-    xstr = [r'$10^{%.1f}$' % x if not x%1 else '' for x in xtck]
+    xstr = [r'$10^{%.0f}$' % x if not x%1 else '' for x in xtck]
     plt.xticks(xtck, xstr, y=0.04)
     plt.ylim(0.05, 0.65)
     plt.ylabel(r'variance explained $(R^2)$', labelpad=2)
@@ -458,17 +481,22 @@ def figure_2AB_final_format(fldr):
                framealpha=0.75, facecolor='white', columnspacing=0.1,
                labelspacing=0.25, prop=dict(size=8.5))
 
-    plt.text(0.075, 0.915, 'a', transform=plt.gcf().transFigure,
+    # fig_letters = ['A', 'B']
+    fig_letters = ['a', 'b']
+
+    plt.text(0.08, 0.915, fig_letters[0], transform=plt.gcf().transFigure,
              fontweight='bold')
-    plt.text(0.7475, 0.915, 'b', transform=plt.gcf().transFigure,
+    plt.text(0.7475, 0.915, fig_letters[1], transform=plt.gcf().transFigure,
              fontweight='bold')
 
-    f_save = figdir + '/updateMarch2021.fig2AB.{}.chr1.png'.format(fldr)
+    f_save = figdir + '/NatGenet.fig2AB.{}.chr1.png'.format(fldr)
     plt.savefig(f_save, dpi=512)
     plt.close()
 
 
-fldr = 'cadd94_gmask_v1.6_without_bstat'
+fldr = 'cadd94_gmask_v1.6_without_bstat_jackknife_results'
+# fldr = 'mockYRI'
+# fldr = 'dropped_chrom_results'
 figure_2AB_final_format(fldr)
 
 
@@ -489,7 +517,7 @@ def figure_3(fldr, fcl, xlab, letter=None):
     bins += 2.5e-3
 
     plt.figure(figsize=(3.25, 1.95))
-    plt.subplots_adjust(left=0.135, bottom=0.175, right=0.995, top=0.995)
+    plt.subplots_adjust(left=0.165, bottom=0.175, right=0.995, top=0.995)
     ax1 = plt.subplot(111)
     format_panels(ax1)
 
@@ -566,11 +594,11 @@ def figure_3_hist(fldr, fcl, xlab, changebackground):
 #     fcl = focals[idx]
 #     figure_3(fldr, fcl, xlab, letters[idx])
 
-fldr = 'cadd94_gmask_v1.6_without_bstat'
+# fldr = 'cadd94_gmask_v1.6_without_bstat'
+# fldr = 'mockYRI'
+fldr = 'dropped_chrom_results'
 xlab = 'distance to nearest NS substitution (cM)'
 figure_3(fldr, 'nonsyn', xlab)
-
-
 
 #%% FIGURE 4 DATA
 def figure_4_data():
@@ -606,7 +634,7 @@ def figure_4_data():
 s_ape, s_cad, s_fis, u_ape, u_cad, u_fis = figure_4_data()
 
 
-#%% FIGURE 4
+# FIGURE 4
 def figure_4(s_fis, s_cad, u_fis, u_cad, changebackground):
     #  upper and lower bounds of u total
     ulo = 1.29
@@ -690,12 +718,15 @@ def figure_4(s_fis, s_cad, u_fis, u_cad, changebackground):
     #                  ncol=2)
     leg._legend_box.align = 'left'
     leg.set_title('estimates from:', prop={'size':8.5})
-    plt.text(0.21, 0.92, 'a', transform=plt.gcf().transFigure,
+    # fig_letters = ['A', 'B']
+    fig_letters = ['a', 'b']
+
+    plt.text(0.21, 0.92, fig_letters[0], transform=plt.gcf().transFigure,
              fontweight='bold')
-    plt.text(0.62, 0.92, 'b', transform=plt.gcf().transFigure,
+    plt.text(0.62, 0.92, fig_letters[1], transform=plt.gcf().transFigure,
              fontweight='bold')
 
-    f_save = figdir + '/updateMarch2021.fig4.urates.png'
+    f_save = figdir + '/NatGenet.fig4.urates.png'
 
     plt.savefig(f_save, dpi=512)
     plt.close()
@@ -857,7 +888,7 @@ def figure_5_detail(fldr, pct, span, changebackground):
     # get the index corresponding to the percentile of sites to take
     # idx = int(pct * num)
     idx = np.where(pred>=pct)[0][0]
-    print 1.0 - idx / 2000.0
+    print(1.0 - idx / 2000.0)
     # take only the top percentile of sites
     pi = pi[idx:]
     pred = pred[idx:]
@@ -940,7 +971,7 @@ def figure_5_inset(fldr, pct, span):
     # get the index corresponding to the percentile of sites to take
     # idx = int(pct * num)
     idx = np.where(ipred>=pct)[0][0]
-    print 1.0 - idx / 2000.0
+    print(1.0 - idx / 2000.0)
     # take only the top percentile of sites
     ipi = ipi[idx:]
     ipred = ipred[idx:]
@@ -1033,13 +1064,16 @@ figure_5_inset('cadd94_gmask_mnb_378', 0.9, 0.1)
 
 
 #%% OBSERVED VS. PREDICTED FINAL FORMATING
-def figure_5_final_format(fldr, span=0.1):
+def figure_5_final_format(fldr, span=0.1, loo=False):
     """create loess smoothed plots for conservation and recombination rates"""
     # get 100 points data
     fdir = final_dir + '/{}/'.format(fldr)
     # f_sort = fdir + 'sort_gc_cm_cn_il_n100.txt'
     # div, pi, pred, gc, cn, cm, il = np.loadtxt(f_sort).T
-    sort_file = final_dir + '/{}/basic_sort_n{}.txt'.format(fldr, 100)
+    if loo:
+        sort_file = final_dir + '/{}/basic_sort_n{}_leaveOneOut.txt'.format(fldr, 100)
+    else:
+        sort_file = final_dir + '/{}/basic_sort_n{}.txt'.format(fldr, 100)
     div, pi, pred = np.loadtxt(sort_file).T
 
     rst = cst_from_fldr(fldr)
@@ -1071,8 +1105,13 @@ def figure_5_final_format(fldr, span=0.1):
     # plot predicted vs. observed
     plt.plot(pred, pi, marker='o', ms=5, color='darkorange', lw=0,
              alpha=0.5)
+    # print(pi[0:10])
+    print(pred[:5])
+    print(pred[-5:])
     # plot LOESS line
     plt.plot(prlo, pilo, lw=2, color='orangered')
+    plt.scatter(np.mean(pred[:5]), np.mean(pi[:5]), s=50, alpha=0.8, marker='o', color='darkred', zorder=3)
+
     plt.text(axmin + 0.01, 1.02, 'without linked selection', ha='left',
              va='center', fontsize=11)
 
@@ -1081,8 +1120,9 @@ def figure_5_final_format(fldr, span=0.1):
     plt.yticks(ytick, x=0.02)
     plt.xticks(xtick, y=0.02)
     plt.xlabel(r'predicted $\pi/\pi_0\ (B)$', labelpad=3)
-    plt.ylim(0.52, axmax)
+    plt.ylim(0.46, axmax)
     plt.xlim(axmin, 1.02)
+    # plt.xlim(0.45, 1.45)
     # solve y=x rotation
     adlen = axmax - 0.52
     oplen = adlen * (1.02 - axmin) / (axmax - 0.52)
@@ -1092,17 +1132,76 @@ def figure_5_final_format(fldr, span=0.1):
     # plt.text(0.75, 0.81, r'$y=x$', rotation=38, ha='center', va='center',
     #          color='darkslategray', alpha=0.65)
     # plt.text(tx1, ty1, 'A', transform=plt.gcf().transFigure)
+    if loo:
+        f_save = figdir + '/fig5.{}.leave-one-out.png'.format(fldr)
+    else:
+        f_save = figdir + '/fig5.{}.png'.format(fldr)
 
-    f_save = figdir + '/updateMarch2021.fig5.{}.png'.format(fldr)
     plt.savefig(f_save, dpi=512)
     plt.close()
 
 
 # fldr = 'cadd94_gmask_mnb_378'
-fldr = 'cadd94_gmask_v1.6_without_bstat'
+# fldr = 'cadd94_gmask_v1.6_without_bstat'
+# fldr = 'mockYRI'
+fldr = 'dropped_chrom_results'
+# fldr = 'cadd94_gmask_v1.6_without_bstat_jackknife_results'
 # fldr = 'cadd94_gmask_v1.6'
 
+# figure_5_final_format(fldr, loo=True)
 figure_5_final_format(fldr)
+
+
+#%%
+def figure_5_neutral_coal_data(fldr, span=0.1):
+    """create loess smoothed plots for conservation and recombination rates"""
+    sort_file = final_dir + '/{}/basic_sort_n{}.txt'.format(fldr, 100)
+    div, pi, pred = np.loadtxt(sort_file).T
+    # normalize by pi0
+    rst = cst_from_fldr(fldr)
+    pi0 = rst.stat.meanpi * rst.fixed.tau_init / rst.params[-1]
+    pi /= pi0
+    pred /= pi0
+    # get loess line and original points
+    prlo, lolist = get_loess_line(fldr, span)
+    pilo = lolist[0]
+    # create new plot
+    plt.figure(figsize=(3.25, 3.25))
+    plt.subplots_adjust(top=0.99, right=0.99, left=0.19, bottom=0.13)
+    ax1 = plt.subplot(111)
+    format_panels(ax1)
+    axmin = pred.min()*0.99
+    axmax = pred.max()*1.01
+    # plot y=x line
+    plt.plot([axmin, axmax], [axmin, axmax], label=r'$y=x$',
+             color='k', ls='--')
+    # plot horizontal line at y=1
+    plt.axhline(y=1, color='k', alpha=0.8, ls='-')
+    # plot predicted vs. observed
+    plt.plot(pred, pi, marker='o', ms=5, color='darkorange', lw=0,
+             alpha=0.5)
+    # plot LOESS line
+    plt.plot(prlo, pilo, lw=2, color='orangered')
+    # plt.text(axmin + 0.01, 1.02, 'without linked selection', ha='left',
+    #          va='center', fontsize=11)
+
+    plt.ylabel(r'observed $\pi/\pi_0$', labelpad=3)
+    plt.xlabel(r'predicted $\pi/\pi_0\ (B)$', labelpad=3)
+    plt.ylim(pi.min()*0.99, pi.max()*1.01)
+    plt.xlim(pred.min()*0.999, pred.max()*1.001)
+    # solve y=x rotation
+    adlen = axmax - 0.52
+    oplen = adlen * (1.02 - axmin) / (axmax - 0.52)
+    rot = np.arctan((oplen / adlen)) * (180.0 / np.pi)
+    plt.text(0.75, 0.81, r'$y=x$', rotation=rot, ha='center', va='center',
+             color='k')
+    f_save = figdir + '/fig5-neutral-coal-data.{}.png'.format(fldr)
+    plt.savefig(f_save, dpi=512)
+    plt.close()
+
+
+fldr = 'mockYRI'
+figure_5_neutral_coal_data(fldr)
 
 
 #%% standard figure set
