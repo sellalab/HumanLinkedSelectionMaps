@@ -1,6 +1,16 @@
 ## Overview
 This README file explains the basics of how to set up and run the `HumanLinkedSelectionMaps` code and replicate the results presented in [our paper](https://elifesciences.org/articles/76065). The code can be adapted to work with data from different species or different human datasets not explored in our paper (see "Advanced usage" section). If you are just interested in downloading and using the B-maps, these can be found in the `Bmaps/` directory, along with relevant README files. B-maps are formatted using the hg19 genome build.
 
+The minimal data required to estimate the effects of linked selection in a given population are:
+- polymorphism data
+- a list of neutral sites
+- a genetic map (ideally not based on polymorphism data, which can be confounded with effects of linked selection)
+- estimates of the neutral substitution rate with fairly high resolution (e.g., 6kb windows)
+- annotations of candidate targets of purifying selection (optional)
+- annotations of candidate targets of selective sweeps (optional)
+
+Note that while either selection target annotation is optional, at least one of them is required: either targets of purifying selection resulting in background selection AND/OR targets of selective sweeps. See Appendix 1 Sections 2 and 3 for details on how we constructed the dataset for the results presented in our paper. In the sections below, we detail the directories where each type of file can be found in our downloadable dataset.
+
 The following "Quick start" guide will allow you to repdroduce the inference results presented in the paper (i.e. the CADD 6% and phastCons 6% results shown in the figures).
 
 **NOTE: The code in this repository was run using Python 2.7, so some compatibility changes may be needed for Python 3.x+.**
